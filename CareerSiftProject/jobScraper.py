@@ -65,12 +65,12 @@ def findDuplicates():
 
 # Outputs all information to a csv file after being filtered
 def writeToFile(allJobListings):
-    with open(filename, 'w', newline='') as csvfile:
+    with open(outputFileName, 'w', newline='') as csvfile:
         writer = csv.writer(csvfile)
 
 
     
          
 while True:
-
+    print("Hi")
     time.sleep(5)
