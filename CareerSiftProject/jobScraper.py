@@ -16,11 +16,11 @@ import time;
 from bs4 import BeautifulSoup;
 
 # Link for indeed which is for Computer Science in only Charlotte
-indeed = "https://www.indeed.com/jobs?q=Computer+Science&l=Charlotte%2C+NC&radius=0&start=0"
+indeed = "https://www.indeed.com/jobs?q=Computer+Science&l=Charlotte%2C+NC&radius="
 glassdoor = ""
 snagajob = ""
 
-allListingsUnfiltered = [];
+allListingsUnfiltered = []
 
 # Pretty much what the variable says
 outputFileName = "jobListings.csv"
@@ -41,20 +41,21 @@ def getJobListings(link):
     
 # Use beautiful soup to retrieve indeed job listings from link
 def getIndeedListings():
-     response = requests.get(indeed)
-     if response.status_code == 200:
+    for i in range(20):
+        response = requests.get(indeed + str((i*10)))
+        if response.status_code == 200:
          soup = BeautifulSoup(response.content, 'html.parser')
          
-     else:
-         print("Something went wrong in the indeed function")
+        else:
+            print("Something went wrong in the indeed function")
          
 # Use beautiful soup to retrieve glassdoor job listings from link
 def getGlassDoorListings():
-    return 1;
+    return 1
 
 # Use beautiful soup to retrieve snagajob job listings from link
 def getSnagajobListings():
-    return 1;
+    return 1
 
 # Find duplicates within all job listings scraped
 def findDuplicates():
@@ -72,5 +73,8 @@ def writeToFile(allJobListings):
     
          
 while True:
-    print("Hi")
+    for i in range (3):
+        response = requests.get(indeed + str((i*10)))
+        print(indeed + str((i*10)))
+        print(response)
     time.sleep(5)
