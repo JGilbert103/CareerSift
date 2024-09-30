@@ -16,7 +16,7 @@ import time;
 from bs4 import BeautifulSoup;
 
 # Link for indeed which is for Computer Science in only Charlotte
-indeed = "https://www.indeed.com/jobs?q=Computer+Science&l=Charlotte%2C+NC&radius="
+indeed = "https://www.indeed.com/jobs?q=Computer+Science&l=Charlotte%2C+NC&radius=0&start="
 glassdoor = ""
 snagajob = ""
 
