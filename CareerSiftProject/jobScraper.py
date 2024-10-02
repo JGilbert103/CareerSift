@@ -15,6 +15,9 @@ import time;
 # God Itself, the scraper
 from bs4 import BeautifulSoup;
 
+from selenium import webdriver
+
+
 # Link for indeed which is for Computer Science in only Charlotte
 indeed = "https://www.indeed.com/jobs?q=Computer+Science&l=Charlotte%2C+NC&radius=0&start="
 glassdoor = ""
@@ -73,8 +76,24 @@ def writeToFile(allJobListings):
     
          
 while True:
-    for i in range (3):
-        response = requests.get(indeed + str((i*10)))
-        print(indeed + str((i*10)))
-        print(response)
-    time.sleep(5)
+    # for i in range (3):
+    #     response = requests.get(indeed + str((i*10)))
+    #     print(indeed + str((i*10)))
+    #     print(response)
+    # time.sleep(5)
+
+    driver = webdriver.Chrome()  # Optional argument, if not specified will search path.
+
+    driver.get(indeed)
+
+    time.sleep(5) # Let the user actually see something!
+
+    search_box = driver.find_element_by_name('q')
+
+    search_box.send_keys('ChromeDriver')
+
+    search_box.submit()
+
+    time.sleep(5) # Let the user actually see something!
+
+    driver.quit()
