@@ -114,33 +114,62 @@ def getIndeedListingInfo(allListingsLinkIndeed):
         # Opens the link for this iteration of the loop
         driver.get(listing)
         #Loads page
-        time.sleep(3)
+        time.sleep(2)
         
         try:
-            jobTitle = driver.find_element_by_class_name("jobsearch-JobInfoHeader-title").text
-        except:
-            print("Could not find job title")
+            # Locate the job title using the CSS selector
+            jobTitleElement = driver.find_element(By.CSS_SELECTOR, "h1.jobsearch-JobInfoHeader-title")
+            jobTitle = jobTitleElement.text.strip()
+        except Exception as e:
+            print("Could not find job title:", e)
             jobTitle = "NO TITLE FOUND"
+
         try:
-            findCompany = driver.find_element_by_xpath("//a[@aria-label]")
-            companyName = findCompany.get_attribute("aria-label")
-            jobCompany = companyName.split(" (opens")[0]
-        except:
-            print("Something went wrong with getting company name")
-            jobCompany = "NO COMPANY FOUND"
+            # Locate the company name using the CSS selector
+            companyNameElement = driver.find_element(By.CSS_SELECTOR, "div[data-company-name='true'] a")
+            companyName = companyNameElement.text.strip()
+        except Exception as e:
+            print("Could not find company name:", e)
+            companyName = "NO COMPANY FOUND"
+
+        try:
+            # Locate the pay range using the CSS selector
+            payRangeElement = driver.find_element(By.CSS_SELECTOR, "div#salaryInfoAndJobType span:nth-of-type(1)")
+            payRange = payRangeElement.text.strip()
+        except Exception as e:
+            print("Could not find pay range:", e)
+            payRange = "NO PAY RANGE FOUND"
+
+        try:
+            # Locate the job type using the CSS selector
+            jobTypeElement = driver.find_element(By.CSS_SELECTOR, "div#salaryInfoAndJobType span:nth-of-type(2)")
+            jobType = jobTypeElement.text.strip()
+        except Exception as e:
+            print("Could not find job type:", e)
+            jobType = "NO JOB TYPE FOUND"
             
+        try:
+            # Locate the application link using the CSS selector
+            applyButtonElement = driver.find_element(By.CSS_SELECTOR, "button[buttontype='primary']")
+            applyLink = applyButtonElement.get_attribute('href')
+        except Exception as e:
+            print("Could not find application link:", e)
+            applyLink = "NO APPLY LINK FOUND"
+
         
 
         #Adds the information to the array
+        indeedInformation.append(listing)
         indeedInformation.append(jobTitle)
-        indeedInformation.append(jobDesc)
+        indeedInformation.append(jobCompany)
         indeedInformation.append(jobPay)
+        indeedInformation.append(jobDesc)
         indeedInformation.append(jobSite)
         indeedInformation.append(applyLink)
         indeedInformation.append(jobType)
-        indeedInformation.append(jobCompany)
         # Output the information to a file
         writeToIndeedFile(indeedInformation)
+        driver.quit()
         
 
 
@@ -170,12 +199,8 @@ def writeToIndeedFile(indeedListingInfo):
     
          
 while True:
-    # for i in range (3):
-    #     response = requests.get(indeed + str((i*10)))
-    #     print(indeed + str((i*10)))
-    #     print(response)
-    # time.sleep(5)
     print("Opening Indeed")
     getIndeedListings()
-    time.sleep(120) # Let the user actually see something!
+
+    time.sleep(300) # Let the user actually see something!
 
