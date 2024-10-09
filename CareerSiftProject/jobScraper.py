@@ -51,14 +51,15 @@ def getIndeedListings():
     for i in range(2):
         # Opens the ChromeDriver application within the project file
         driver = webdriver.Chrome()
+        driver.set_window_size(800, 600)
         # Obtains and loads the link for indeed
         driver.get(indeed + str(i*10))
         # Sleep time to allow for loading
-        time.sleep(5)
+        time.sleep(3)
         # Searches for the body of the page and presses the END key to account for "lazy loading"
         driver.find_element(By.TAG_NAME, 'body').send_keys(Keys.END)
         # Allows lazy loading to occur
-        time.sleep(3)  
+        time.sleep(2)  
         # Prints which page it is working on
         print("Link #" + str(i))
         # Creates an array of all the elements with the class name for each card on the page
@@ -111,10 +112,11 @@ def getIndeedListingInfo(allListingsLinkIndeed):
         jobCompany = ""
         #Opens the webdriver
         driver = webdriver.Chrome()
+        driver.maximize_window()
         # Opens the link for this iteration of the loop
         driver.get(listing)
         #Loads page
-        time.sleep(2)
+        time.sleep(3)
         
         try:
             # Locate the job title using the CSS selector
@@ -127,39 +129,72 @@ def getIndeedListingInfo(allListingsLinkIndeed):
         try:
             # Locate the company name using the CSS selector
             companyNameElement = driver.find_element(By.CSS_SELECTOR, "div[data-company-name='true'] a")
-            companyName = companyNameElement.text.strip()
+            jobCompany = companyNameElement.text.strip()
         except Exception as e:
             print("Could not find company name:", e)
-            companyName = "NO COMPANY FOUND"
+            jobCompany = "NO COMPANY FOUND"
 
         try:
-            # Locate the pay range using the CSS selector
-            payRangeElement = driver.find_element(By.CSS_SELECTOR, "div#salaryInfoAndJobType span:nth-of-type(1)")
-            payRange = payRangeElement.text.strip()
+            # Locate the job description using the CSS selector
+            jobDescElement = driver.find_element(By.CSS_SELECTOR, "div.jobsearch-JobComponent-description")
+            jobDesc = jobDescElement.text.strip()
+            
+            # Check if "Full job description" is present and slice the text from that point onward
+            keyword = "Full job description"
+            if keyword in jobDesc:
+                jobDesc = jobDesc.split(keyword, 1)[-1].strip()  # Keep everything after "Full job description"
+            
+            # Remove all commas and replace them with semi colons (fix after display on website due to csv issues)
+            jobDesc = jobDesc.replace(',', ';')
+            # Remove any newlines and replace them with spaces
+            jobDesc = jobDesc.replace('\n', ' ')
         except Exception as e:
-            print("Could not find pay range:", e)
-            payRange = "NO PAY RANGE FOUND"
+            print("Could not find job description:", e)
+            jobDesc = "NO JOB DESCRIPTION FOUND"
 
         try:
-            # Locate the job type using the CSS selector
-            jobTypeElement = driver.find_element(By.CSS_SELECTOR, "div#salaryInfoAndJobType span:nth-of-type(2)")
-            jobType = jobTypeElement.text.strip()
+            # Locate the salary or job type section
+            salaryInfoDiv = driver.find_element(By.CSS_SELECTOR, "div#salaryInfoAndJobType")
+            
+            # Check if there are multiple spans inside, one for pay and one for job type
+            spans = salaryInfoDiv.find_elements(By.CSS_SELECTOR, "span")
+            
+            if len(spans) == 2:
+                jobPay = spans[0].text.strip()  # First span is salary info
+                jobType = spans[1].text.strip()  # Second span is job type
+            elif len(spans) == 1:
+                jobPay = "NO PAY RANGE FOUND"  # No salary info, only job type
+                jobType = spans[0].text.strip()  # First (and only) span is job type
+            else:
+                jobPay = "NO PAY RANGE FOUND"
+                jobType = "NO JOB TYPE FOUND"
+            
         except Exception as e:
-            print("Could not find job type:", e)
+            print("Error finding pay and job type:", e)
+            jobPay = "NO PAY RANGE FOUND"
             jobType = "NO JOB TYPE FOUND"
+
             
         try:
-            # Locate the application link using the CSS selector
-            applyButtonElement = driver.find_element(By.CSS_SELECTOR, "button[buttontype='primary']")
+            # Try to find the external application button first
+            applyButtonElement = driver.find_element(By.CSS_SELECTOR, "button[buttontype='primary'][href]")
             applyLink = applyButtonElement.get_attribute('href')
-        except Exception as e:
-            print("Could not find application link:", e)
-            applyLink = "NO APPLY LINK FOUND"
+            print(f"External application link found: {applyLink}")
+        except Exception:
+            try:
+                # If no external button, look for the internal Indeed apply form
+                applyFormElement = driver.find_element(By.CSS_SELECTOR, "form[action]")
+                applyLink = "Apply on Indeed- " + listing
+            except Exception as e:
+                print("Could not find application link:", e)
+                applyLink = "NO APPLY LINK FOUND"
 
         
 
         #Adds the information to the array
-        indeedInformation.append(listing)
+        # LISTING LINK FOR DEBUGGING
+        # indeedInformation.append(listing)
+        # Information
         indeedInformation.append(jobTitle)
         indeedInformation.append(jobCompany)
         indeedInformation.append(jobPay)
@@ -191,7 +226,7 @@ def findDuplicates():
 # Outputs all information to a csv file after being filtered
 def writeToIndeedFile(indeedListingInfo):
     # Opening a file and appends to it, hence the a.
-    with open(outputFileName, 'a', newline='') as csvfile:
+    with open(outputFileName, 'a', newline='', encoding='utf-8') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(indeedListingInfo)
 
