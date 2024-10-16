@@ -15,6 +15,7 @@ import time;
 # God Itself, the scraper
 from bs4 import BeautifulSoup;
 
+# NVM this is God. Beautiful soup is good and all, but Indeed does NOT like it
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
