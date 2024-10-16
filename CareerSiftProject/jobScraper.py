@@ -29,21 +29,8 @@ snagajob = ""
 allListingsUnfiltered = []
 
 # Pretty much what the variable says
-outputFileName = "indeedListings.csv"
-
-"""
-def getJobListings(link):
-    response = requests.get(link)
-    if response.status_code == 200:
-        soup = BeautifulSoup(response.content, 'html.parser')
-        price_element = soup.find()
-        priceDec_element = soup.find()
-        price = price_element.text.strip()
-        priceDec = priceDec_element.text.strip()
-        return (price+priceDec)
-    else:
-        print(link)
-"""    
+IndeedOutputFileName = "indeedListings.csv"
+ 
     
 # Use beautiful soup to retrieve indeed job listings from link
 def getIndeedListings():
@@ -51,7 +38,6 @@ def getIndeedListings():
     for i in range(2):
         # Opens the ChromeDriver application within the project file
         driver = webdriver.Chrome()
-        driver.set_window_size(800, 600)
         # Obtains and loads the link for indeed
         driver.get(indeed + str(i*10))
         # Sleep time to allow for loading
@@ -61,9 +47,9 @@ def getIndeedListings():
         # Allows lazy loading to occur
         time.sleep(2)  
         # Prints which page it is working on
-        print("Link #" + str(i))
+        # print("Link #" + str(i))
         # Creates an array of all the elements with the class name for each card on the page
-        jobListingClass = driver.find_elements(By.CSS_SELECTOR, 'li.css-5lfssm.eu4oa1w0')
+        jobListingClass = driver.find_elements(By.CSS_SELECTOR, 'li.css-1ac2h1w.eu4oa1w0')
         #For each loop
         for listing in jobListingClass:
             try:
@@ -98,6 +84,7 @@ def getIndeedListings():
 
 #Retrieve the information from getIndeedListings should be every page retreived from the pages searched. This will get the information from each page
 def getIndeedListingInfo(allListingsLinkIndeed):
+    print("Running getIndeedListingInfo")
     # For each loop for all listings
     for listing in allListingsLinkIndeed:
         # Initializing an array for each item
@@ -111,8 +98,10 @@ def getIndeedListingInfo(allListingsLinkIndeed):
         jobType = ""
         jobCompany = ""
         #Opens the webdriver
+        print("MAYBE")
         driver = webdriver.Chrome()
         driver.maximize_window()
+        print("TEZST")
         # Opens the link for this iteration of the loop
         driver.get(listing)
         #Loads page
@@ -125,6 +114,7 @@ def getIndeedListingInfo(allListingsLinkIndeed):
         except Exception as e:
             print("Could not find job title:", e)
             jobTitle = "NO TITLE FOUND"
+            brokenLinks(listing)
 
         try:
             # Locate the company name using the CSS selector
@@ -133,6 +123,7 @@ def getIndeedListingInfo(allListingsLinkIndeed):
         except Exception as e:
             print("Could not find company name:", e)
             jobCompany = "NO COMPANY FOUND"
+            brokenLinks(listing)
 
         try:
             # Locate the job description using the CSS selector
@@ -151,6 +142,7 @@ def getIndeedListingInfo(allListingsLinkIndeed):
         except Exception as e:
             print("Could not find job description:", e)
             jobDesc = "NO JOB DESCRIPTION FOUND"
+            brokenLinks(listing)
 
         try:
             # Locate the salary or job type section
@@ -168,11 +160,13 @@ def getIndeedListingInfo(allListingsLinkIndeed):
             else:
                 jobPay = "NO PAY RANGE FOUND"
                 jobType = "NO JOB TYPE FOUND"
+                brokenLinks(listing)
             
         except Exception as e:
             print("Error finding pay and job type:", e)
             jobPay = "NO PAY RANGE FOUND"
             jobType = "NO JOB TYPE FOUND"
+            brokenLinks(listing)
 
             
         try:
@@ -188,6 +182,7 @@ def getIndeedListingInfo(allListingsLinkIndeed):
             except Exception as e:
                 print("Could not find application link:", e)
                 applyLink = "NO APPLY LINK FOUND"
+                brokenLinks(listing)
 
         
 
@@ -205,6 +200,7 @@ def getIndeedListingInfo(allListingsLinkIndeed):
         # Output the information to a file
         writeToIndeedFile(indeedInformation)
         driver.quit()
+    print("Ending ListingInfo")
         
 
 
@@ -226,11 +222,14 @@ def findDuplicates():
 # Outputs all information to a csv file after being filtered
 def writeToIndeedFile(indeedListingInfo):
     # Opening a file and appends to it, hence the a.
-    with open(outputFileName, 'a', newline='', encoding='utf-8') as csvfile:
+    with open(IndeedOutputFileName, 'a', newline='', encoding='utf-8') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(indeedListingInfo)
 
-
+def brokenLinks(link):
+    with open("brokenIndeedLinks.csv", 'a', newline='', encoding='utf-8') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(link)
     
          
 while True:
