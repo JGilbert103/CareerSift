@@ -149,25 +149,31 @@ def getIndeedListingInfo(allListingsLinkIndeed):
             # Locate the salary or job type section
             salaryInfoDiv = driver.find_element(By.CSS_SELECTOR, "div#salaryInfoAndJobType")
             
-            # Check if there are multiple spans inside, one for pay and one for job type
+            # Find all spans inside salaryInfoDiv
             spans = salaryInfoDiv.find_elements(By.CSS_SELECTOR, "span")
             
-            if len(spans) == 2:
-                jobPay = spans[0].text.strip()  # First span is salary info
-                jobType = spans[1].text.strip()  # Second span is job type
-            elif len(spans) == 1:
-                jobPay = "NO PAY RANGE FOUND"  # No salary info, only job type
-                jobType = spans[0].text.strip()  # First (and only) span is job type
-            else:
-                jobPay = "NO PAY RANGE FOUND"
-                jobType = "NO JOB TYPE FOUND"
-                brokenLinks(listing)
+            # Initialize empty variables
+            jobPay = "NO PAY RANGE FOUND"
+            jobType = "NO JOB TYPE FOUND"
             
+            if len(spans) > 0:
+                # First span might contain pay, check for numbers or dollar sign
+                if any(char.isdigit() for char in spans[0].text) or "$" in spans[0].text:
+                    jobPay = spans[0].text.strip()
+                
+                # Check if second span exists for job type
+                if len(spans) > 1:
+                    jobType = spans[1].text.strip()
+                else:
+                    # If there's only one span, it might be the job type, not salary
+                    if "Full-time" in spans[0].text or "Part-time" in spans[0].text or "Contract" in spans[0].text:
+                        jobType = spans[0].text.strip()
         except Exception as e:
             print("Error finding pay and job type:", e)
             jobPay = "NO PAY RANGE FOUND"
             jobType = "NO JOB TYPE FOUND"
             brokenLinks(listing)
+
 
             
         try:
