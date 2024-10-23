@@ -25,7 +25,7 @@ from selenium.webdriver.common.keys import Keys
 # Link for indeed which is for Computer Science in only Charlotte
 indeed = "https://www.indeed.com/jobs?q=Computer+Science&l=Charlotte%2C+NC&radius=0&start="
 glassdoor = ""
-snagajob = ""
+snagajob = "https://www.snagajob.com/search?q=computer+science&w=28213&radius=5"
 
 allListingsUnfiltered = []
 
@@ -168,6 +168,7 @@ def getIndeedListingInfo(allListingsLinkIndeed):
                     # If there's only one span, it might be the job type, not salary
                     if "Full-time" in spans[0].text or "Part-time" in spans[0].text or "Contract" in spans[0].text:
                         jobType = spans[0].text.strip()
+                        jobType = jobType.replace('-', ' ')
         except Exception as e:
             print("Error finding pay and job type:", e)
             jobPay = "NO PAY RANGE FOUND"
@@ -212,12 +213,23 @@ def getIndeedListingInfo(allListingsLinkIndeed):
 
 
         # Use beautiful soup to retrieve glassdoor job listings from link
+
 def getGlassDoorListings():
     return 1
 
 # Use beautiful soup to retrieve snagajob job listings from link
 def getSnagajobListings():
-    return 1
+    allListingsLink = []
+    driver = webdriver.Chrome()
+    driver.get(snagajob)
+    time.sleep(3)
+    driver.find_element(By.TAG_NAME, 'body').send_keys(Keys.END)
+    time.sleep(2)
+    jobListingClass = driver.find_elements(By.CSS_SELECTOR, '_ngcontent-ng-c864621463')
+    for listing in jobListingClass:
+        print(listing)
+
+
 
 # Find duplicates within all job listings scraped
 def findDuplicates():
@@ -240,8 +252,9 @@ def brokenLinks(link):
     
          
 while True:
-    print("Opening Indeed")
-    getIndeedListings()
+    # print("Opening Indeed")
+    # getIndeedListings()
+    getSnagajobListings()
 
     time.sleep(300) # Let the user actually see something!
 
