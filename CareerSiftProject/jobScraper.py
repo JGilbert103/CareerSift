@@ -25,12 +25,13 @@ from selenium.webdriver.common.keys import Keys
 # Link for indeed which is for Computer Science in only Charlotte
 indeed = "https://www.indeed.com/jobs?q=Computer+Science&l=Charlotte%2C+NC&radius=0&start="
 glassdoor = ""
-snagajob = "https://www.snagajob.com/search?q=computer+science&w=28213&radius=5"
+snagajob = "https://www.snagajob.com/search?q=computer+science&w=charlotte&radius=5&page="
 
 allListingsUnfiltered = []
 
 # Pretty much what the variable says
 IndeedOutputFileName = "indeedListings.csv"
+GlassdoorOutputFileName = "glassdoorListings.csv"
  
     
 # Use beautiful soup to retrieve indeed job listings from link
@@ -220,13 +221,25 @@ def getGlassDoorListings():
 # Use beautiful soup to retrieve snagajob job listings from link
 def getSnagajobListings():
     allListingsLink = []
-    driver = webdriver.Chrome()
-    driver.get(snagajob)
-    time.sleep(3)
-    driver.find_element(By.TAG_NAME, 'body').send_keys(Keys.END)
-    time.sleep(2)
-    jobListingClass = driver.find_elements(By.CSS_SELECTOR, '_ngcontent-ng-c864621463')
-    for listing in jobListingClass:
+    for i in range(2):
+        driver = webdriver.Chrome()
+        driver.get(snagajob + str(i+1))
+        time.sleep(3)
+        # Scroll down the page to load lazy images
+        time.sleep(2)
+        jobListingClass = driver.find_elements(By.CSS_SELECTOR, 'job-card')
+        for listing in jobListingClass:
+            try:
+                jobLinkElement = listing.find_element(By.CSS_SELECTOR, 'meta[itemprop="url"]')
+                jobLink = jobLinkElement.get_attribute('content')
+                allListingsLink.append(jobLink)
+            except:
+                print("Could not find any job listing")
+        driver.quit()
+    getSnagajobListingInfo(allListingsLink)
+
+def getSnagajobListingInfo(allListingsLinkGlassdoor):
+    for listing in allListingsLinkGlassdoor:
         print(listing)
 
 
