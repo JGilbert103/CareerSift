@@ -265,9 +265,9 @@ def brokenLinks(link):
     
          
 while True:
-    # print("Opening Indeed")
-    # getIndeedListings()
-    getSnagajobListings()
+    print("Opening Indeed")
+    getIndeedListings()
+    # getSnagajobListings()
 
     time.sleep(300) # Let the user actually see something!
 
