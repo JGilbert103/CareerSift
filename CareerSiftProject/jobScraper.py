@@ -100,10 +100,8 @@ def getIndeedListingInfo(allListingsLinkIndeed):
         jobType = ""
         jobCompany = ""
         #Opens the webdriver
-        print("MAYBE")
         driver = webdriver.Chrome()
         driver.maximize_window()
-        print("TEZST")
         # Opens the link for this iteration of the loop
         driver.get(listing)
         #Loads page
@@ -243,7 +241,31 @@ def getSnagajobListings():
 
 def getSnagajobListingInfo(allListingsLinkGlassdoor):
     for listing in allListingsLinkGlassdoor:
-        print(listing)
+        # Initializing an array for each item
+        glassDoorInformation = []
+        # Each item to be found
+        jobTitle = ""
+        jobDesc = ""
+        jobPay = ""
+        jobSite = "Snagajob"
+        applyLink = ""
+        jobType = ""
+        jobCompany = ""
+        #Opens the webdriver
+        driver = webdriver.Chrome()
+        driver.maximize_window()
+        # Opens the link for this iteration of the loop
+        driver.get(listing)
+        #Loads page
+        time.sleep(3)
+
+        try:
+            payElement = driver.find_element(By.CSS_SELECTOR, 'td[data-snagtag="job-est-wage"]')
+            jobPay = payElement.text
+            print(jobPay)
+        except:
+            print("Something went wrong finding the pay")
+
 
 
 
