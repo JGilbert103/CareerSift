@@ -165,6 +165,7 @@ def getIndeedListingInfo(allListingsLinkIndeed):
                 # Check if second span exists for job type
                 if len(spans) > 1:
                     jobType = spans[1].text.strip()
+                    jobType = jobType.replace('-', ' ')
                     jobType = jobType.replace(',', '-')
                 else:
                     # If there's only one span, it might be the job type, not salary
