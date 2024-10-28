@@ -165,11 +165,13 @@ def getIndeedListingInfo(allListingsLinkIndeed):
                 # Check if second span exists for job type
                 if len(spans) > 1:
                     jobType = spans[1].text.strip()
+                    jobType = jobType.replace(',', '-')
                 else:
                     # If there's only one span, it might be the job type, not salary
                     if "Full-time" in spans[0].text or "Part-time" in spans[0].text or "Contract" in spans[0].text:
                         jobType = spans[0].text.strip()
                         jobType = jobType.replace('-', ' ')
+                        jobType = jobType.replace(',', '-')
         except Exception as e:
             print("Error finding pay and job type:", e)
             jobPay = "NO PAY RANGE FOUND"
