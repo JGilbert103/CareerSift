@@ -258,14 +258,30 @@ def getSnagajobListingInfo(allListingsLinkGlassdoor):
         driver.get(listing)
         #Loads page
         time.sleep(3)
+        try:
+            try:
+                payElement = driver.find_element(By.CSS_SELECTOR, 'td[data-snagtag="job-est-wage"]')
+                jobPay = payElement.text
+                print(jobPay)
+            except:
+                try:
+                    payElement = driver.find_element(By.CSS_SELECTOR, 'td[data-snagtag="job-wage"]')
+                    jobPay = payElement.text
+                    print(jobPay)
+                except:
+                    print("Something went wrong finding the pay")
+        except:
+            print("Could not find pay attribute")
+            jobPay = "NO PAY RANGE FOUND"
 
         try:
-            payElement = driver.find_element(By.CSS_SELECTOR, 'td[data-snagtag="job-est-wage"]')
-            jobPay = payElement.text
-            print(jobPay)
+            jobTypeElement = driver.find_element(By.CSS_SELECTOR, 'td[data-snagtag="job-categories"]')
+            jobType = jobTypeElement.text
+            jobType = jobType.replace('-', ' ')
+            jobType = jobType.replace(',', '-')
         except:
-            print("Something went wrong finding the pay")
-
+            print("Could not find job type attribute")
+            jobType = "NO JOB TYPE FOUND"
 
 
 
