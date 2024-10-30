@@ -40,7 +40,7 @@ def createListing(dbPath, csvPath): #ADD PATH TO DATABSE AND CSV
             for row in reader:
                 # Insert listing data into the listing table
                 cursor.execute('''
-                    INSERT INTO listing (position, company, salary, description, source, sourceLink, type)
+                    INSERT INTO listing (listid, position, company, salary, type, source, sourceLink, description)
                     VALUES (?, ?, ?, ?, ?, ?, ?)
                 ''', (
                     row['position'],

@@ -25,15 +25,15 @@ CREATE TABLE listing (
     position VARCHAR(50),
     company VARCHAR(50),
     salary VARCHAR(25),
-    description TEXT,
+    type VARCHAR(25),
     source VARCHAR(25),
     sourceLink TEXT,
-    type VARCHAR(25),
+    description TEXT,
 );
 
 -- Adding a listing for testing
-INSERT INTO listing (listid, position, company, salary, description, source, sourcelink, type)
-VALUES(0, fake position, fake company, $0 a year, this is a fake job listing for test purposes, linkedout, https://www.google.com/search?q=google&oq=google&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIYCAEQLhhDGIMBGMcBGLEDGNEDGIAEGIoFMgYIAhBFGDwyBggDEEUYPDIGCAQQRRg8MgYIBRBFGDwyBggGEEUYPDIGCAcQRRhB0gEIMTI5M2owajeoAgCwAgA&sourceid=chrome&ie=UTF-8, all time);
+INSERT INTO listing (listid, position, company, salary, type, source, sourceLink, description)
+VALUES(0, fake position, fake company, $0 a year, remote, linkedout, https://www.google.com/search?q=google&oq=google&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIYCAEQLhhDGIMBGMcBGLEDGNEDGIAEGIoFMgYIAhBFGDwyBggDEEUYPDIGCAQQRRg8MgYIBRBFGDwyBggGEEUYPDIGCAcQRRhB0gEIMTI5M2owajeoAgCwAgA&sourceid=chrome&ie=UTF-8, this is a fake job listing for test purposes);
 
 -- Tables for saved listings
 CREATE TABLE savedListing (
