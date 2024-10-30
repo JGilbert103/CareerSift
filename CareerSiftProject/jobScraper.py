@@ -279,9 +279,40 @@ def getSnagajobListingInfo(allListingsLinkGlassdoor):
             jobType = jobTypeElement.text
             jobType = jobType.replace('-', ' ')
             jobType = jobType.replace(',', '-')
+            print(jobType)
         except:
             print("Could not find job type attribute")
             jobType = "NO JOB TYPE FOUND"
+
+        try:
+            jobTitleElement = driver.find_element(By.ID, "jobTitle")
+            jobTitle = jobTitleElement.text
+            jobTitle = jobTitle.replace(',', ';')
+            print(jobTitle)
+        except:
+            print("Could not find job title")
+            jobTitle = "NO JOB TITLE FOUND"
+
+        try:
+            jobCompanyElement = driver.find_element(By.CSS_SELECTOR, '[data-snagtag="company-name]')
+            jobCompany = jobCompanyElement.text
+            jobCompany = jobCompany.replace(',', ';')
+            print(jobCompany)
+        except:
+            print("Could not find company name")
+            jobCompany = "NO COMPANY NAME FOUND"
+
+# TODO DESC
+        # try:
+        #     jobDescriptionElement = driver
+# TODO LINK
+        # try:
+        #     applyButton = driver.find_element(By.CSS_SELECTOR, '[data-snagtag="apply-button"]')
+        #     onclick_attribute = applyButton.get_attribute("onclick")
+        #     print("Listing: " + onclick_attribute)
+        # except:
+        #     print("Shit didnt work... try a differrent method to get the link")
+
 
 
 
@@ -306,9 +337,9 @@ def brokenLinks(link):
     
          
 while True:
-    print("Opening Indeed")
-    getIndeedListings()
-    # getSnagajobListings()
+    # print("Opening Indeed")
+    # getIndeedListings()
+    getSnagajobListings()
 
     time.sleep(300) # Let the user actually see something!
 
