@@ -48,3 +48,4 @@ CREATE TABLE savedListing (
 -- Adding a saved listing for testing
 INSERT INTO savedListing (userid, listid)
 VALUES (0, 0);
+

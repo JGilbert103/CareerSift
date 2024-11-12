@@ -26,6 +26,7 @@ def add_user(dbPath, username, password, email, isadmin): #ADD PATH TO DATABASE
         # Close the connection
         conn.close()
 
+#Function to add a listing to the database
 def createListing(dbPath, csvPath): #ADD PATH TO DATABSE AND CSV
     # Connect to the SQLite database
     conn = sqlite3.connect() #ADD PATH TO DATABASE
@@ -64,6 +65,7 @@ def createListing(dbPath, csvPath): #ADD PATH TO DATABSE AND CSV
         # Close the connection
         conn.close()
 
+#Function for users to save a listing 
 def saveListing(dbPath, userid, listid): #ADD PATH TO DATABASE
     # Connect to the SQLite database
     conn = sqlite3.connect() #ADD PATH TO DATABASE
@@ -91,3 +93,29 @@ def saveListing(dbPath, userid, listid): #ADD PATH TO DATABASE
     finally:
         # Close the connection
         conn.close()
+
+#Function for admins to be able to delete listings
+def remove_listing(dbPath, listid):
+    # Connect to the SQLite database
+    conn = sqlite3.connect() #ADD PATH TO DATABASE
+    cursor = conn.cursor()
+    
+    try:
+        # Delete the listing with the specified listid
+        cursor.execute("DELETE FROM listing WHERE listid = ?", (listid,))
+        
+        # Check if any row was deleted
+        if cursor.rowcount > 0:
+            conn.commit()
+            print(f"Listing with ID {listid} removed successfully.")
+        else:
+            print(f"No listing found with ID {listid}.")
+    
+    except sqlite3.Error as e:
+        # Handle database errors
+        print("Error removing listing:", e)
+    
+    finally:
+        # Close the connection
+        conn.close()
+
