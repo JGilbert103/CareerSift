@@ -49,3 +49,18 @@ CREATE TABLE savedListing (
 INSERT INTO savedListing (userid, listid)
 VALUES (0, 0);
 
+-- Tables for messages
+CREATE TABLE messages (
+    message_id INTEGER PRIMARY KEY,
+    sender_id INTEGER,
+    receiver_id INTEGER,
+    listid INTEGER,
+    subject TEXT,
+    message_body TEXT,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    is_read BOOLEAN DEFAULT FALSE,
+
+    FOREIGN KEY (sender_id) REFERENCES user(userid),
+    FOREIGN KEY (receiver_id) REFERENCES user(userid),
+    FOREIGN KEY (listid) REFERENCES listing(listid)
+);
