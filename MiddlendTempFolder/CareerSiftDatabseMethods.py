@@ -2,7 +2,7 @@ import sqlite3
 import csv
 
 #Function to add a user to the database
-def add_user(dbPath, username, password, email, isadmin):
+def addUser(dbPath, username, password, email, isadmin):
     # Connect to the SQLite database
     conn = sqlite3.connect('middletempfolder/database.db')
     cursor = conn.cursor()
@@ -21,45 +21,6 @@ def add_user(dbPath, username, password, email, isadmin):
     except sqlite3.Error as e:
         # Handle any database errors
         print("Error adding user:", e)
-    
-    finally:
-        # Close the connection
-        conn.close()
-
-#Function to add a listing to the database
-def createListing(dbPath, csvPath): #ADD PATH TO DATABSE AND CSV
-    # Connect to the SQLite database
-    conn = sqlite3.connect('middletempfolder/database.db')
-    cursor = conn.cursor()
-    
-    try:
-        # Open the CSV file and read data
-        with open(csv_path, 'r') as file:
-            reader = csv.DictReader(file)
-            
-            # Iterate through each row in the CSV file
-            for row in reader:
-                # Insert listing data into the listing table
-                cursor.execute('''
-                    INSERT INTO listing (listid, position, company, salary, type, source, sourceLink, description)
-                    VALUES (?, ?, ?, ?, ?, ?, ?)
-                ''', (
-                    row['position'],
-                    row['company'],
-                    row['salary'],
-                    row['description'],
-                    row['source'],
-                    row['sourceLink'],
-                    row['type']
-                ))
-        
-        # Commit the transaction
-        conn.commit()
-        print("Listings created successfully from CSV.")
-    
-    except sqlite3.Error as e:
-        # Handle any database errors
-        print("Error creating listings from CSV:", e)
     
     finally:
         # Close the connection
@@ -95,7 +56,7 @@ def saveListing(dbPath, userid, listid):
         conn.close()
 
 #Function for admins to be able to delete listings
-def remove_listing(dbPath, listid):
+def removeListing(dbPath, listid):
     # Connect to the SQLite database
     conn = sqlite3.connect('middletempfolder/database.db')
     cursor = conn.cursor()
