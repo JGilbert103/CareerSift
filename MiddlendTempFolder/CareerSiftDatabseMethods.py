@@ -2,9 +2,9 @@ import sqlite3
 import csv
 
 #Function to add a user to the database
-def add_user(dbPath, username, password, email, isadmin): #ADD PATH TO DATABASE
+def add_user(dbPath, username, password, email, isadmin):
     # Connect to the SQLite database
-    conn = sqlite3.connect() #ADD PATH TO DATABASE
+    conn = sqlite3.connect('middletempfolder/database.db')
     cursor = conn.cursor()
     
     try:
@@ -29,7 +29,7 @@ def add_user(dbPath, username, password, email, isadmin): #ADD PATH TO DATABASE
 #Function to add a listing to the database
 def createListing(dbPath, csvPath): #ADD PATH TO DATABSE AND CSV
     # Connect to the SQLite database
-    conn = sqlite3.connect() #ADD PATH TO DATABASE
+    conn = sqlite3.connect('middletempfolder/database.db')
     cursor = conn.cursor()
     
     try:
@@ -66,9 +66,9 @@ def createListing(dbPath, csvPath): #ADD PATH TO DATABSE AND CSV
         conn.close()
 
 #Function for users to save a listing 
-def saveListing(dbPath, userid, listid): #ADD PATH TO DATABASE
+def saveListing(dbPath, userid, listid):
     # Connect to the SQLite database
-    conn = sqlite3.connect() #ADD PATH TO DATABASE
+    conn = sqlite3.connect('middletempfolder/database.db')
     cursor = conn.cursor()
     
     try:
@@ -97,7 +97,7 @@ def saveListing(dbPath, userid, listid): #ADD PATH TO DATABASE
 #Function for admins to be able to delete listings
 def remove_listing(dbPath, listid):
     # Connect to the SQLite database
-    conn = sqlite3.connect() #ADD PATH TO DATABASE
+    conn = sqlite3.connect('middletempfolder/database.db')
     cursor = conn.cursor()
     
     try:
