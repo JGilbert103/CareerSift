@@ -51,16 +51,16 @@ VALUES (0, 0);
 
 -- Tables for messages
 CREATE TABLE messages (
-    message_id INTEGER PRIMARY KEY,
-    sender_id INTEGER,
-    receiver_id INTEGER,
+    messageid INTEGER PRIMARY KEY,
+    senderid INTEGER,
+    receiverid INTEGER,
     listid INTEGER,
     subject TEXT,
-    message_body TEXT,
+    messagebody TEXT,
     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-    is_read BOOLEAN DEFAULT FALSE,
+    isread BOOLEAN DEFAULT FALSE,
 
-    FOREIGN KEY (sender_id) REFERENCES user(userid),
-    FOREIGN KEY (receiver_id) REFERENCES user(userid),
+    FOREIGN KEY (senderid) REFERENCES user(userid),
+    FOREIGN KEY (receiverid) REFERENCES user(userid),
     FOREIGN KEY (listid) REFERENCES listing(listid)
 );
