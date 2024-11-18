@@ -11,6 +11,7 @@ import asyncio;
 import nest_asyncio;
 import csv;
 import time;
+import os;
 
 # God Itself, the scraper
 from bs4 import BeautifulSoup;
@@ -29,9 +30,10 @@ snagajob = "https://www.snagajob.com/search?q=computer+science&w=charlotte&radiu
 
 allListingsUnfiltered = []
 
+directory = os.path.join("..", "CareerSiftApp")
 # Pretty much what the variable says
-IndeedOutputFileName = "indeedListings.csv"
-GlassdoorOutputFileName = "glassdoorListings.csv"
+IndeedOutputFileName = os.path.join(directory, "indeedListings.csv")
+SnagajobOutputFileName = os.path.join(directory, "snagajobListings.csv")
  
     
 # Use beautiful soup to retrieve indeed job listings from link
@@ -99,6 +101,7 @@ def getIndeedListingInfo(allListingsLinkIndeed):
         applyLink = ""
         jobType = ""
         jobCompany = ""
+        # jobWholeLink = listing
         #Opens the webdriver
         driver = webdriver.Chrome()
         driver.maximize_window()
@@ -207,6 +210,7 @@ def getIndeedListingInfo(allListingsLinkIndeed):
         indeedInformation.append(jobSite)
         indeedInformation.append(applyLink)
         indeedInformation.append(jobDesc)
+        # indeedInformation.append(jobWholeLink)
         # Output the information to a file
         writeToIndeedFile(indeedInformation)
         driver.quit()
@@ -216,8 +220,27 @@ def getIndeedListingInfo(allListingsLinkIndeed):
 
         # Use beautiful soup to retrieve glassdoor job listings from link
 
+def findInactiveListings():
+    with open(IndeedOutputFileName, 'r', newline='', encoding='utf-8') as csvfile:
+        csv_reader = csv.reader(csvfile)
+        headers = next(csv_reader, None)
+        
+        for row in csv_reader:
+            link = row[-1].strip() if len(row) > 0 else ""
+            # print(link)
+            driver = webdriver.Chrome()
+            driver.maximize_window()
+            driver.get(link)
+            # TODO IMPLEMENT FINDING INACTIVE
+            
+            driver.quit()  # Close the browser for this link
+
+
+
+
 def getGlassDoorListings():
     return 1
+
 
 # Use beautiful soup to retrieve snagajob job listings from link
 def getSnagajobListings():
@@ -302,16 +325,29 @@ def getSnagajobListingInfo(allListingsLinkGlassdoor):
             print("Could not find company name")
             jobCompany = "NO COMPANY NAME FOUND"
 
-# TODO DESC
-        # try:
-        #     jobDescriptionElement = driver
-# TODO LINK
-        # try:
-        #     applyButton = driver.find_element(By.CSS_SELECTOR, '[data-snagtag="apply-button"]')
-        #     onclick_attribute = applyButton.get_attribute("onclick")
-        #     print("Listing: " + onclick_attribute)
-        # except:
-        #     print("Shit didnt work... try a differrent method to get the link")
+        try:
+            # Job Description
+            jobDescElement = driver.find_element(By.CSS_SELECTOR, 'jobs-description .job-description')
+            jobDesc = jobDescElement.text.strip().replace(',', ';').replace('\n', ' ')
+        except:
+            print("Could not find job description")
+            jobDesc = "NO JOB DESCRIPTION FOUND"
+        applyLink = listing
+
+        glassDoorInformation.append(jobTitle)
+        glassDoorInformation.append(jobCompany)
+        glassDoorInformation.append(jobPay)
+        glassDoorInformation.append(jobType)
+        glassDoorInformation.append(jobSite)
+        glassDoorInformation.append(applyLink)
+        glassDoorInformation.append(jobDesc)
+        writeToSnagajobFile(glassDoorInformation)
+
+
+def writeToSnagajobFile(glassDoorInformation):
+    with open(SnagajobOutputFileName, 'a', newline='', encoding='utf-8') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(glassDoorInformation)
 
 
 
@@ -338,8 +374,8 @@ def brokenLinks(link):
          
 while True:
     print("Opening Indeed")
-    getIndeedListings()
-    # getSnagajobListings()
-
+    # getIndeedListings()
+    getSnagajobListings()
+    # findInactiveListings()
     time.sleep(300) # Let the user actually see something!
 
