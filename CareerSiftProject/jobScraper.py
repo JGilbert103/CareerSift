@@ -32,8 +32,8 @@ allListingsUnfiltered = []
 
 directory = os.path.join("..", "CareerSiftApp")
 # Pretty much what the variable says
-IndeedOutputFileName = os.path.join(directory, "indeedListings.csv")
-SnagajobOutputFileName = os.path.join(directory, "snagajobListings.csv")
+IndeedOutputFileName = "indeedListings.csv"
+SnagajobOutputFileName = "snagajobListings.csv"
  
     
 # Use beautiful soup to retrieve indeed job listings from link
@@ -45,11 +45,11 @@ def getIndeedListings():
         # Obtains and loads the link for indeed
         driver.get(indeed + str(i*10))
         # Sleep time to allow for loading
-        time.sleep(3)
+        time.sleep(1)
         # Searches for the body of the page and presses the END key to account for "lazy loading"
         driver.find_element(By.TAG_NAME, 'body').send_keys(Keys.END)
         # Allows lazy loading to occur
-        time.sleep(2)  
+        time.sleep(1)  
         # Prints which page it is working on
         # print("Link #" + str(i))
         # Creates an array of all the elements with the class name for each card on the page
@@ -108,7 +108,7 @@ def getIndeedListingInfo(allListingsLinkIndeed):
         # Opens the link for this iteration of the loop
         driver.get(listing)
         #Loads page
-        time.sleep(3)
+        time.sleep(1)
         
         try:
             # Locate the job title using the CSS selector
@@ -248,9 +248,9 @@ def getSnagajobListings():
     for i in range(2):
         driver = webdriver.Chrome()
         driver.get(snagajob + str(i+1))
-        time.sleep(3)
+        time.sleep(1)
         # Scroll down the page to load lazy images
-        time.sleep(2)
+        time.sleep(1)
         jobListingClass = driver.find_elements(By.CSS_SELECTOR, 'job-card')
         for listing in jobListingClass:
             try:
@@ -280,7 +280,7 @@ def getSnagajobListingInfo(allListingsLinkGlassdoor):
         # Opens the link for this iteration of the loop
         driver.get(listing)
         #Loads page
-        time.sleep(3)
+        time.sleep(1)
         try:
             try:
                 payElement = driver.find_element(By.CSS_SELECTOR, 'td[data-snagtag="job-est-wage"]')
@@ -374,7 +374,7 @@ def brokenLinks(link):
          
 while True:
     print("Opening Indeed")
-    # getIndeedListings()
+    getIndeedListings()
     getSnagajobListings()
     # findInactiveListings()
     time.sleep(300) # Let the user actually see something!
