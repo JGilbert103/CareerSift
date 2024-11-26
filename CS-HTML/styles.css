@@ -28,6 +28,10 @@
     height: 95px;
 }
 
+.contact-chip {
+    border: 3px solid var(--dark);
+}
+
 .nav-content {
     display: flex;
     align-items: center; 
@@ -85,11 +89,72 @@ body {
 .LI {
     background-color: var(--silver);
     color: var(--bluer-bler);
-    border-color: var(--darkgrey);
+    border-color: var(--dark);
 }
 
 .REG {
-   background-color: var(--dark); 
+   background-color: var(--darkgrey); 
    color: var(--silver);
-   border-color: var(--darkgrey);
+   border-color: var(--dark);
+}
+
+.listing {
+    background-color: white;
+    border-radius: 8px;
+    margin: 5% 15%;
+    text-align: center;
+    padding: 10px 20px;
+}
+
+.listing hr {
+    width: 85%;
+    color: #4E6766;
+}
+
+.job-info {
+    display: flex;
+    flex-wrap: wrap;
+    text-align: center;
+    justify-content: center;
+    gap: 30%;
+}
+
+.listing .job-source {
+    display: block;
+    margin-left: auto;
+    padding: 5px 5px;
+}
+
+.listing-nav {
+    display: flex;
+    margin-right: auto;
+    padding: 5px 5px;
+}
+
+.compare {
+    background-color: white;
+    border-radius: 8px;
+    padding: 10px 20px;
+    text-align: center;
+    width: 75%;
+    margin: 0 auto;
+    border: 1px solid black;
+}
+
+.compare .bold {
+    font-weight: 800;
+}
+
+.compare th, td {
+    padding: 10px 20px; 
+}
+
+.support {
+    background-color: white;
+    border-radius: 8px;
+    text-align: center;
+    width: 75%;
+    margin: 5% auto;
+    padding: 10px;
+    border: 1px solid black;
 }

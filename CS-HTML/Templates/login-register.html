@@ -24,7 +24,7 @@
                 </ul>
             </nav>
             <hr>
-        <div>
+        </div>
         <h1>LOGIN/REGISTER</h1>
         <div>
             <div class="login">
@@ -41,15 +41,20 @@
             </div>
             <div class="register">
                 <form>
-                    <label class="LI_Reg_title">Log In</label><br>
+                    <label class="LI_Reg_title">Register</label><br>
                     <label for="user">Username</label>
                     <input type="text" placeholder="Username" id="user" name="user"><br>
                     <label for="password">Password</label>
                     <input type="password" placeholder="Password" id="password" name="password"><br>
                     <label for="password">Password (again)</label>
-                    <input type="password" placeholder="Password" id="password" name="password"><br>
+                    <input type="password" placeholder="Password (again)" id="password" name="password"><br>
+                    <label for="check">Link an email for notifications about jobs?</label>
+                    <input type="checkbox" id="check" name="check"><br>
+                    <label for="email">Email</label>
+                    <input type="email" placeholder="example@gmail.com" id="email" name="email">
                     <button type="submit">Register</button>
                     <!--make a checkbox for if they want an email attached, if checked display an email field-->
+                    
                 </form>
                 <p>Already have an account? <a href="login-register.html">Log in</a></p> <!-- go to the login view of this page-->
             </div>
