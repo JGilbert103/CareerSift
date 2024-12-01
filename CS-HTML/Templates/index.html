@@ -17,7 +17,11 @@
                 const amtDisplay = document.getElementById("amt");
                 amtDisplay.textContent = "$0";
                 slider.addEventListener("input", () => {
-                    amtDisplay.textContent = `$0 - $${slider.value}`;
+                    if (slider.value == 0) {
+                        amtDisplay.textContent = "$0";  
+                    } else {
+                        amtDisplay.textContent = `$0 - $${slider.value}`;
+                    }
                 });
             
                 const stars = document.querySelectorAll(".star");
@@ -64,7 +68,7 @@
                 <hr>
                 <h5>Salary:</h5>
                 <p class="amt" id="amt"></p>
-                <input type="range" id="sal" name="sal" min="0" max="100000" value="0" step="1000"><br>
+                <input type="range" id="sal" name="sal" min="0" max="175000" value="0" step="1000"><br>
                 <hr>
             </div>
             <div class="search-cards">
