@@ -11,7 +11,7 @@
 
 :root {
     --silver: #B7B5B3;
-    --bler: #B0BCCD;
+    --bler: rgb(181, 209, 234);
     --bluer-bler: #4E6766;
     --dark-purple: #2A1F2D;
     --lime: #07B900;
@@ -29,7 +29,7 @@
 }
 
 .contact-chip {
-    border: 3px solid var(--dark);
+    border: 2px solid var(--dark);
 }
 
 .nav-content {
@@ -71,7 +71,7 @@ hr {
 }
 
 body {
-    background-color: #B0BCCD;
+    background-color: var(--bler);
     height: 1000px; /*change this*/
     font-family: var(--font);
     font-weight: 300;
@@ -88,13 +88,11 @@ body {
 
 .LI {
     background-color: var(--silver);
-    color: var(--bluer-bler);
     border-color: var(--dark);
 }
 
 .REG {
-   background-color: var(--darkgrey); 
-   color: var(--silver);
+   background-color: var(--silver); 
    border-color: var(--dark);
 }
 
@@ -157,4 +155,119 @@ body {
     margin: 5% auto;
     padding: 10px;
     border: 1px solid black;
+}
+
+.login, .register {
+    background-color: white;
+    border-radius: 8px;
+    width: 75%;
+    margin: 5% auto;
+    padding: 5px;
+}
+
+.login form label, .register form label {
+    padding-bottom: 10px;
+}
+
+.main-container {
+    display: flex;
+    width: 100%;
+    margin-top: 30px;
+}
+
+.filters {
+    width: 15%;
+    flex-direction: column;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 8px;
+}
+
+h3, h5 {
+    text-align: center;
+}
+
+.filters hr {
+    width: 50%;
+}
+
+.amt {
+    text-align: center;
+}
+
+.search-cards {
+    width: 75%;
+    margin: 0 auto;
+}
+
+.search {
+    background-color:rgb(160, 174, 193);
+    border: 1px solid var(--bluer-bler);
+    border-radius: 50px;
+    width: 50%;
+    height: 10%;
+    color: var(--bluer-bler);
+    text-align: center;
+    background-image: url(/Images/search-icon.png);
+    background-repeat: no-repeat;
+    background-position: 95%;
+    background-size: 2.5%;
+    margin: 0 25%;
+}
+
+.search::placeholder {
+    color: var(--bluer-bler);
+    font-size: 150%;
+    text-align: center;
+}
+
+a:visited, a  {
+    text-decoration: none;
+    color: var(--bluer-bler);
+}
+
+a hr {
+    width: 50%;
+}
+
+.card-info {
+    display: flex;
+    flex-direction: row;
+    gap: 15%;
+    flex-wrap: wrap;
+    padding-left: 17.5%;
+}
+
+.cards {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 5%;
+    padding-left: 3%;
+}
+
+.card {
+    background-color: white;
+    text-align: center;
+    width: 45%;
+    border: 1px solid black;
+    border-radius: 8px;
+    margin-top: 40px;
+}
+
+.star {
+    width: 20px;
+    height: 20px;
+    float: right;
+    padding-right: 10px;
+    padding-top: 10px;
+    z-index: 10;
+}
+
+input[type=checkbox] {
+    margin: 20px 30px;
+}
+
+input[type=range] {
+    margin-left: 17.5%;
 }
