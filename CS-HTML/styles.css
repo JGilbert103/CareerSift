@@ -1,5 +1,3 @@
-/* do something with .contact-chip */
-
 @font-face {
     font-family: 'Inter';
     font-style: italic;
@@ -72,7 +70,6 @@ hr {
 
 body {
     background-color: var(--bler);
-    height: 1000px; /*change this*/
     font-family: var(--font);
     font-weight: 300;
 }
@@ -233,15 +230,6 @@ body {
     background-color: #058900;
 }
 
-.login p a, .register p a {
-    color: #007BFF;
-    text-decoration: none;
-}
-
-.login p a:hover, .register p a:hover {
-    text-decoration: underline;
-}
-
 .hidden {
     display: none !important;
 }
@@ -346,4 +334,50 @@ input[type=checkbox] {
 
 input[type=range] {
     margin-left: 17.5%;
+}
+
+.bios {
+    list-style: none;
+    padding: 0;
+    display: flex; 
+    flex-direction: row; 
+    justify-content: center;  
+}
+
+.bios li {
+    display: flex; 
+    flex-direction: column; 
+    align-items: center;
+    text-align: center; 
+    border: 2px solid transparent; 
+    padding: 30px; 
+    width: 350px; 
+    position: relative;
+}
+
+.bios li:not(:last-child) {
+    border-right: 3px solid var(--bluer-bler);
+    border-radius: 4px;
+}
+
+.bios li:not(:last-child) {
+    padding-right: 20px;
+}
+
+.headshot {
+    width: 100%; 
+    height: auto; 
+    margin-bottom: 20px; 
+}
+
+.linkedin {
+    height: 30px;
+    width: 30px;
+    cursor: pointer;
+}
+
+.bios li p {
+    margin: 0; 
+    line-height: 1.5; 
+    font-size: 14px; 
 }
