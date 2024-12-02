@@ -1,6 +1,6 @@
 import os 
 
-# import bcrypt
+import bcrypt
 from flask import Flask, redirect, url_for, render_template, request, session
 from database import db
 from models import User as User
