@@ -26,7 +26,7 @@ def index():
 ## ADD REGISTER METHOD
 @app.route('/register', methods=['POST', 'GET'])
 def register();
-    form = RegisterForm()
+    regForm = RegisterForm()
 
     if request.method == 'POST' and form.validate_on_submit():
         # Salting and hashing user input for password
@@ -43,9 +43,9 @@ def register();
         db.session.commit()
 
         # Saving the users session
-        session['nUser'] = username
+        session['newUser'] = username
         # Generating a userid for the user
-        session['userid'] = new_user.id 
+        session['userid'] = newUser.userid 
 
         # Redirect user to home/index page
         return redirect(url_for('index'))
@@ -54,6 +54,31 @@ def register();
     return render_template('register.html', form=form)
 
 ## ADD LOGIN METHOD
+@app.route('/login', methods=['POST', 'GET'])
+def login():
+    logForm = LoginForm()
+    # Validating login form on submission
+    if logForm.validate_on_submit():
+        # If form is valid, searching the databse for the matching user
+        currentUser = db.session.query(User).filter_by(email=request.form['email']).one()
+        # Checking user password
+        if bcrypt.checkpw(request.form['password'].encode('utf-8'), currentUser.password):
+            # If the password is correct, adding the user to the session
+            session['user'] = currentUser.username
+            session['userid'] = currentUser.userid
+            # Redirect user to home/index page
+            return redirect(url_for('index'))
+        
+        # If the password was incorrect, send error message
+        logForm.password.errors = ["Incorrect username or password"]
+        # Redirect user to login form
+        return render_template("login.html", form=logForm)
+
+    # If the form did not validate
+    else:
+        # Redirect user to login form
+        return render_template("login.html" form=logForm)
+
 
 ## Logging out a user
 @app.route('/logout')
