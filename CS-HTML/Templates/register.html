@@ -18,33 +18,16 @@
                     <li><a href="saved.html">Saved</a></li> <!-- only if logged in -->
                     <li><a href="about.html">About</a></li>
                     <li><a href="contact.html">Contact</a></li>
-                    <li><a href="login-register.html"class="but LI">Log in</a></li> <!-- only if logged out -->
-                    <li><a href="login-register.html"class="but REG">Register</a></li> <!-- maybe if either of these are clicked it goes to their respective one? -->
+                    <li><a href="login.html"class="but LI">Log in</a></li> <!-- only if logged out -->
+                    <li><a href="register.html"class="but REG">Register</a></li> <!-- maybe if either of these are clicked it goes to their respective one? -->
                     <li><a href="settings.html"><img class="contact-chip" src="/Images/JakePic.jpg" width="50px" height="50px"></a></li>
                 </ul>
-            </nav>
-            <hr>
+            </nav>  
         </div>
+        <hr>
         <div class="auth-container">
-            <script src="/login-register.js"></script>
-            <div class="auth-switch">
-                <button id="show-login" class="active">Log In</button>
-                <button id="show-register">Register</button>
-            </div>
-        
-            <div class="login">
-                <form>
-                    <h2 class="auth-title">Log In</h2>
-                    <label for="login-username">Username</label>
-                    <input type="text" placeholder="Username" id="login-username" name="username"><br>
-                    <label for="login-password">Password</label>
-                    <input type="password" placeholder="Password" id="login-password" name="password"><br>
-                    <button type="submit">Login</button>
-                </form>
-                <p>Don't have an account? <a href="#" id="register-link">Register</a></p>
-            </div>
-        
-            <div class="register hidden">
+            <script src="/register.js"></script>
+            <div class="register">
                 <form>
                     <h2 class="auth-title">Register</h2>
                     <label for="register-username">Username</label>
@@ -55,13 +38,13 @@
                     <input type="password" placeholder="Confirm Password" id="confirm-password" name="password-confirm"><br>
                     <label for="email-checkbox">Link email for job notifications?</label>
                     <input type="checkbox" id="email-checkbox" name="notifications"><br>
-                    <label for="register-email" class="hidden" id="email-label">Email</label>
-                    <input type="email" placeholder="example@gmail.com" id="register-email" name="email" class="hidden"><br>
+                    <label for="register-email" id="email-label">Email</label>
+                    <input type="email" placeholder="example@gmail.com" id="register-email" name="email"><br>
                     <button type="submit">Register</button>
                 </form>
-                <p>Already have an account? <a href="#" id="login-link">Log in</a></p>
+                <p>Already have an account? <a href="login.html">Log in</a></p>
             </div>
         </div>
     </body>
 </html>
-<!--Finished-->
+
