@@ -28,11 +28,54 @@
         <h1>SAVED</h1>
         <div class="main-container">
             <section class="filters">
-
+                <h3>Refine your Search</h3>
+                <hr>
+                <h5>Location:</h5>
+                <input type="checkbox" id="remote" name="remote"><label for="remote">Remote</label><br>
+                <input type="checkbox" id="os" name="os"><label for="os">On-Site</label><br>
+                <input type="checkbox" id="hybrid" name="hybrid"><label for="hybrid">Hybrid</label><br>
+                <hr>
+                <h5>Position:</h5>
+                <input type="checkbox" id="FT" name="FT"><label for="FT">Full-Time</label><br>
+                <input type="checkbox" id="PT" name="PT"><label for="PT">Part-Time</label><br>
+                <input type="checkbox" id="contract" name="contract"><label for="contract">Contract</label><br>
+                <hr>
+                <h5>Salary:</h5>
+                <p class="amt" id="amt"></p>
+                <input type="range" id="sal" name="sal" min="0" max="175000" value="0" step="1000"><br>
+                <hr>
             </section>
-            <section class="search-cards">
-                <a href="compare.html">Compare</a>
-            </section>
+            <div class="search-cards">
+                <button><a>Compare</a></button>
+                <div class="cards">
+                    <div class="card">
+                        <input type="checkbox" id="choice" name="choice">
+                        <a href="listing.html">
+                            <h2>Job Title</h2>
+                            <p>Company Name</p>
+                            <hr>
+                            <div class="card-info">
+                                <p>Position</p>
+                                <p>Location</p>
+                                <p>Salary</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="card">
+                        <input type="checkbox" id="choice" name="choice">
+                        <a href="listing.html">
+                            <h2>Job Title</h2>
+                            <p>Company Name</p>
+                            <hr>
+                            <div class="card-info">
+                                <p>Position</p>
+                                <p>Location</p>
+                                <p>Salary</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </body>
 </html>

@@ -157,16 +157,93 @@ body {
     border: 1px solid black;
 }
 
-.login, .register {
-    background-color: white;
-    border-radius: 8px;
-    width: 75%;
-    margin: 5% auto;
-    padding: 5px;
+.auth-container {
+    width: 90%;
+    max-width: 800px;
+    margin: 50px auto;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    border: 1px solid black;
+    padding: 20px;
+    text-align: center;
+}
+
+.auth-switch {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.auth-switch button {
+    background-color: #6b8d8c;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.auth-switch button.active {
+    background-color: #4E6766;
+}
+
+.auth-switch button:hover {
+    background-color: #4E6766;
+}
+
+.auth-title {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 24px;
+    text-align: center;
+}
+
+.login form, .register form {
+    text-align: left;
 }
 
 .login form label, .register form label {
-    padding-bottom: 10px;
+    display: block;
+    margin: 10px 0 5px;
+    font-weight: bold;
+    color: #555;
+}
+
+.login form input, .register form input {
+    width: 97%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.login form button, .register form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #07B900;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.login form button:hover, .register form button:hover {
+    background-color: #058900;
+}
+
+.login p a, .register p a {
+    color: #007BFF;
+    text-decoration: none;
+}
+
+.login p a:hover, .register p a:hover {
+    text-decoration: underline;
+}
+
+.hidden {
+    display: none !important;
 }
 
 .main-container {
@@ -255,13 +332,12 @@ a hr {
     margin-top: 40px;
 }
 
-.star {
+.star, #choice {
     width: 20px;
     height: 20px;
     float: right;
     padding-right: 10px;
     padding-top: 10px;
-    z-index: 10;
 }
 
 input[type=checkbox] {
