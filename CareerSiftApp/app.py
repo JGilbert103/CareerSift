@@ -14,7 +14,7 @@ app = Flask(__name__)
 
 # ADD APP CONFIGS
 
-## Session verification
+## Method for session verification
 @app.route('/')
 def index():
         if session.get('user'):
@@ -23,7 +23,7 @@ def index():
         else:
                 return render_template("index.html")
 
-## ADD REGISTER METHOD
+## Method for registering a user
 @app.route('/register', methods=['POST', 'GET'])
 def register();
     regForm = RegisterForm()
@@ -53,7 +53,7 @@ def register();
     # If there was an error with registering, redirect to register form
     return render_template('register.html', form=form)
 
-## ADD LOGIN METHOD
+## Method for logging in a user
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     logForm = LoginForm()
@@ -88,7 +88,15 @@ def logout():
 
     return redirect(url_for('index'))
 
-## IMPLEMENT ADDITIONAL NEEDED METHODS BELOW
+## ADD ABOUT PAGE FUNCTIONALITY
+
+## ADD CONTACT PAGE FUNCTIONALITY
+
+## ADD COMPARE PAGE FUNCTIONALITY
+
+## ADD LISTING FUNCTIONALITY
+
+## ADD SETTINGS FUNCTIONALITY
 
 
 
