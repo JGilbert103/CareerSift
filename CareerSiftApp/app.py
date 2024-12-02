@@ -89,14 +89,30 @@ def logout():
     return redirect(url_for('index'))
 
 ## ADD ABOUT PAGE FUNCTIONALITY
+@app.route('/about', methods=[])
 
 ## ADD CONTACT PAGE FUNCTIONALITY
+@app.route('/contact', methods=[])
 
 ## ADD COMPARE PAGE FUNCTIONALITY
+@app.route('/compare', methods=[])
 
 ## ADD LISTING FUNCTIONALITY
+@app.route('/listings', methods=[])
 
-## ADD SETTINGS FUNCTIONALITY
+## ADD SAVED FUNCTIONALITY
+@app.route('/saved', methods=[])
+
+## Method for settings page
+@app.route('/settings', methods=[GET])
+def showSettings():
+    # Checking which users settings to access
+    if session.get('user'):
+        # Redirect user to their settings page
+        return render_template("settings.html", user=session['user'])    
+    else:
+        # Redirect user to settings page
+        return render_template("settings.html")    
 
 
 
