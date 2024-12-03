@@ -60,7 +60,7 @@ def login():
     # Validating login form on submission
     if logForm.validate_on_submit():
         # If form is valid, searching the databse for the matching user
-        currentUser = db.session.query(User).filter_by(email=request.form['email']).one()
+        currentUser = db.session.query(User).filter_by(username=request.form['username']).one()
         # Checking user password
         if bcrypt.checkpw(request.form['password'].encode('utf-8'), currentUser.password):
             # If the password is correct, adding the user to the session

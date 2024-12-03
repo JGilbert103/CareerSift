@@ -5,7 +5,7 @@ from wtforms import ValidationError
 from models import User
 from database import db
 
-## Implement register form functionality
+# Method for register form functionality
 class RegisterForm(FlaskForm):
     class Meta:
         csrf = False
@@ -30,7 +30,20 @@ class RegisterForm(FlaskForm):
             if db.session.query(user).filter_by(email=field.data).count() != 0:
                 raise ValidationError('Email registered to another user')
 
-
-## Implement login form functionality
+# Method for login form functionality
 class LoginForm(FlaskForm):
     class Meta:
+        csrf = False
+        # Input for username
+        username = StringField('Username', [Username(message='Enter your Username'), DataRequired()])
+
+        # Input for password
+        password = PasswordField('Password', [DataRequired(message="Enter your password")])
+
+        # Form submission
+        submit = SubmitField('Submit')
+
+        # Validating username and password
+        def validateUser(self, field)
+            if db.session.query(user).filter_by(username=field.data).count() != 0:
+                    raise ValidationError('Username or Password is not valid')
