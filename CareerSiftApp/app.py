@@ -1,5 +1,6 @@
 import os 
 
+import sqlite3
 import bcrypt
 from flask import Flask, redirect, url_for, render_template, request, session
 from database import db
@@ -13,6 +14,25 @@ import jobScraper
 app = Flask(__name__)
 
 # ADD APP CONFIGS
+
+###   Methods for site functionalities   ###
+
+# Method to populate job listings to home/index page
+def populateListings():
+    # Connecting to the database
+    conn = sqlite3.connect('CareerSiftDB.db') ## CHANGE DATABASE FILE FORMAT ##
+    cursor = conn.cursor()
+    # Querying the database for listings
+    cursor.execute("SELECT title, company, position, salary, type, sourcelink, description FROM listing ")
+    # Saving listings found to jobs variable
+    jobs = cursor.fetchall()
+    # Closing connection to the database
+    conn.close()
+    # Returning jobs
+    return jobs
+
+
+###   Methods to handle session verification, register, login, and logout   ###
 
 ## Method for session verification
 @app.route('/')
@@ -79,7 +99,6 @@ def login():
         # Redirect user to login form
         return render_template("login.html" form=logForm)
 
-
 ## Logging out a user
 @app.route('/logout')
 def logout():
@@ -90,6 +109,14 @@ def logout():
 
     # Redirect user to home/index page
     return redirect(url_for('index'))
+
+###   Methods for pages   ###
+
+# Method for home/index page
+@app.route('/')
+def index():
+    jobListings = populateListings()
+    return render_template('index.html', jobs=jobListings)
 
 # Method for about us page
 @app.route('/about', methods=['GET'])
@@ -102,9 +129,6 @@ def showAbout():
 
 ## ADD COMPARE PAGE FUNCTIONALITY
 @app.route('/compare', methods=[])
-
-## ADD LISTING FUNCTIONALITY - Note: LISTINGS SHOWN ON INDEX PAGE
-@app.route('/listings', methods=[])
 
 ## ADD SAVED FUNCTIONALITY
 @app.route('/saved', methods=[])
@@ -124,4 +148,4 @@ def showSettings():
 
 ## Main Method
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)

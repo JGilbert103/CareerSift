@@ -16,17 +16,19 @@ class User(db.Model):
 
 class Listing(db.model):
     listid = db.Column('listid', db.Integer, primary_key=True)
-    position = db.Column('position', db.String(50))
+    title = db.column('title', db.String(50))
     company = db.Column('company', db.String(50))
+    position = db.Column('position', db.String(50))
     salary = db.Column('salary', db.String(25))
     type = db.Column('type', db.String(25))
     sourceLink = db.Column('sourceLink', db.Text)
     description = db.Column('description', db.Text)
 
-    def __init__(self, listid, position, company, salary, type, sourceLink, description)
+    def __init__(self, listid, title, company, position, salary, type, sourceLink, description)
         self.listid = listid
-        self.position = position
+        self.title = title
         self.company = company
+        self.position = position
         self.salary = salary
         self.type = type
         self.sourceLink = sourceLink

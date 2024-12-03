@@ -22,11 +22,11 @@ VALUES(0, owen, P@ssw0rd!, ohartzel@charlotte.edu, true);
 -- Tables for listings
 CREATE TABLE listing (
     listid INTEGER PRIMARY KEY,
-    position VARCHAR(50),
+    title VARCHAR(50),
     company VARCHAR(50),
+    position VARCHAR(50),
     salary VARCHAR(25),
     type VARCHAR(25),
-    source VARCHAR(25),
     sourceLink TEXT,
     description TEXT,
 );
