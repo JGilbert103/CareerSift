@@ -9,20 +9,11 @@ from database import db
 class RegisterForm(FlaskForm):
     class Meta:
         csrf = False
-        # Input for username
-        username = StringField('Username', validators=[Length(1, 25)])
-
-        # Input for password
-        password = PasswordField('Password', [DataRequired(message="Enter a password to create an account"),
-        EqualTo('confirmPassword', message="Passwords entered must match")])
-
-        # Input for confirm password
+        username = StringField('Username', validators=[Length(1, 25), DataRequired()])
+        password = PasswordField('Password', validators=[DataRequired(), Length(min=10, max=25), EqualTo('confirmPassword', message="Passwords must match")])
         confirmPassword = PasswordField('Confirm Password', validators=[Length(min=10, max=25)])
-
-        # Input for email
-        email = StringField('Email',[Email(message='Email is not valid'), DataRequired()])
-
-        # Form submission
+        email = StringField('Email', validators=[Email(message="Invalid email address"), DataRequired()])
+        notifications = BooleanField('Link email for job notifications?')
         submit = SubmitField('Register')
 
         # Checking if the email is already registered to an account

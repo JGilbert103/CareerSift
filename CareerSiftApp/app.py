@@ -17,6 +17,8 @@ app = Flask(__name__)
 # App configs
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///CareerSiftDB.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = 'your-secret-key'  # Set your secret key here
+
 db.init_app(app)
 
 ###   Methods for site functionalities   ###
@@ -100,9 +102,9 @@ def populateListings():
 ## Method for registering a user
 @app.route('/register', methods=['POST', 'GET'])
 def register():
-    regForm = RegisterForm()
+    form = RegisterForm()
 
-    if request.method == 'POST' and regForm.validate_on_submit():
+    if request.method == 'POST' and form.validate_on_submit():
         # Salting and hashing user input for password
         shpass = bcrypt.hashpw(request.form['password'].encode('utf-8'), bcrypt.gensalt())
 
