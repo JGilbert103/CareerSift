@@ -32,16 +32,8 @@ def populateListings():
     return jobs
 
 
-###   Methods to handle session verification, register, login, and logout   ###
 
-## Method for session verification
-@app.route('/')
-def index():
-        if session.get('user'):
-                return render_template("index.html", user=session['user'])
-
-        else:
-                return render_template("index.html")
+###   Methods to handle register, login, and logout   ###
 
 ## Method for registering a user
 @app.route('/register', methods=['POST', 'GET'])
@@ -110,13 +102,21 @@ def logout():
     # Redirect user to home/index page
     return redirect(url_for('index'))
 
+
+
 ###   Methods for pages   ###
 
 # Method for home/index page
 @app.route('/')
 def index():
+    # Calling populateListings function
     jobListings = populateListings()
-    return render_template('index.html', jobs=jobListings)
+    # Session verification and populating listings
+    if session.get('user'):
+            return render_template("index.html", user=session['user'], jobs=jobListings)
+    # Populating listings
+    else:
+            return render_template("index.html", jobs=jobListings)
 
 # Method for about us page
 @app.route('/about', methods=['GET'])
