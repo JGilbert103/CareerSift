@@ -1,6 +1,8 @@
 from database import db
+from sqlalchemy import Column, Integer, ForeignKey
+from sqlalchemy.orm import relationship
 
-class User(db.Model):
+class user(db.Model):
     userid = db.Column('userid', db.Integer, primary_key=True)
     username = db.Column('username', db.String(25))
     password = db.Column('password', db.String(25))
@@ -14,7 +16,7 @@ class User(db.Model):
         self.email = email
         self.isadmin = isadmin
 
-class Listing(db.model):
+class listing(db.model):
     listid = db.Column('listid', db.Integer, primary_key=True)
     title = db.column('title', db.String(50))
     company = db.Column('company', db.String(50))
@@ -34,7 +36,7 @@ class Listing(db.model):
         self.sourceLink = sourceLink
         self.description = description
 
-class SavedListing(db.Model):
+class savedListing(db.Model):
     __tablename__ = 'savedListing'
 
     userid = Column(Integer, ForeignKey('user.userid'), primary_key=True)
@@ -43,7 +45,7 @@ class SavedListing(db.Model):
     user = relationship('user', backref='savedListings')
     listing = relationship('listing', backref='savedbyusers')
 
-class Messages(db.model):
+class messages(db.model):
     messageid = db.Column('messageid', db.Integer, primary_key=True)
     senderid = db.Column('senderid', db.Integer)
     receiverid = db.Column('receiverid', db.Integer)
