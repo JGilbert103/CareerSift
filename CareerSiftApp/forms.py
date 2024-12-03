@@ -23,7 +23,7 @@ class RegisterForm(FlaskForm):
         email = StringField('Email',[Email(message='Email is not valid'), DataRequired()])
 
         # Form submission
-        submit = SubmitField('Submit')
+        submit = SubmitField('Register')
 
         # Checking if the email is already registered to an account
         def validateEmail(self, field):
@@ -46,7 +46,7 @@ class LoginForm(FlaskForm):
         password = PasswordField('Password', [DataRequired(message="Enter your password")])
 
         # Form submission
-        submit = SubmitField('Submit')
+        submit = SubmitField('Login')
 
         # Validating username and password
         def validateUser(self, field)
