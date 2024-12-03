@@ -33,12 +33,18 @@
         <hr>
         <div class="auth-container">
             <div class="login">
-                <form>
+                <form method="POST" action="{{ url_for('login') }}">
                     <h2 class="auth-title">Log In</h2>
                     <label for="login-username">Username</label>
                     <input type="text" placeholder="Username" id="login-username" name="username"><br>
+                    {% for error in form.username.errors %}
+                        <div class="error">{{ error }}</div>
+                    {% endfor %}
                     <label for="login-password">Password</label>
                     <input type="password" placeholder="Password" id="login-password" name="password"><br>
+                    {% for error in form.password.errors %}
+                        <div class="error">{{ error }}</div>
+                    {% endfor %}
                     <button type="submit">Login</button>
                 </form>
                 <p>Don't have an account? <a href="register.html">Register</a></p>

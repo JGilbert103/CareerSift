@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, TextAreaField
 from wtforms.validators import Length, Regexp, DataRequired, EqualTo, Email
 from wtforms import ValidationError
-from models import User
+from models import user
 from database import db
 
 # Method for register form functionality
@@ -39,19 +39,19 @@ class RegisterForm(FlaskForm):
 class LoginForm(FlaskForm):
     class Meta:
         csrf = False
-        # Input for username
-        username = StringField('Username', [Username(message='Enter your Username'), DataRequired()])
-
-        # Input for password
-        password = PasswordField('Password', [DataRequired(message="Enter your password")])
-
-        # Form submission
+        username = StringField('Username', validators=[DataRequired()])
+        password = PasswordField('Password', validators=[DataRequired()])
         submit = SubmitField('Login')
 
         # Validating username and password
-        def validateUser(self, field)
-            if db.session.query(user).filter_by(username=field.data).count() != 0:
-                    raise ValidationError('Username or Password is not valid')
+        def validate_username(self, field):
+        user = User.query.filter_by(username=field.data).first()
+        if not user:
+            raise ValidationError('Username does not exist')
+
+    def validate_password(self, field):
+        if field.data and not bcrypt.checkpw(field.data.encode('utf-8'), field.data.encode('utf-8')):
+            raise ValidationError('Incorrect password')
 
 # Method for contact us form functionality
 class ContactForm(FlaskForm):

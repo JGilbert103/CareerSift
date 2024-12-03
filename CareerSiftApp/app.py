@@ -130,21 +130,21 @@ def register():
 ## Method for logging in a user
 @app.route('/login', methods=['POST', 'GET'])
 def login():
-    logForm = LoginForm()
+    form = LoginForm()
     # Validating login form on submission
-    if logForm.validate_on_submit():
+    if form.validate_on_submit():
         # If form is valid, searching the databse for the matching user
-        currentUser = db.session.query(User).filter_by(username=request.form['username']).one()
+        user = db.session.query(user).filter_by(username=request.form['username']).one()
         # Checking user password
-        if bcrypt.checkpw(request.form['password'].encode('utf-8'), currentUser.password):
+        if bcrypt.checkpw(request.form['password'].encode('utf-8'), user.password):
             # If the password is correct, adding the user to the session
-            session['user'] = currentUser.username
-            session['userid'] = currentUser.userid
+            session['user'] = user.username
+            session['userid'] = user.userid
             # Redirect user to home/index page
             return redirect(url_for('index'))
         
         # If the password was incorrect, send error message
-        logForm.password.errors = ["Incorrect username or password"]
+        form.password.errors = ["Incorrect username or password"]
         # Redirect user to login form
         return render_template("login.html", form=logForm)
 
