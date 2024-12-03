@@ -1,6 +1,7 @@
 import os 
 
 import sqlite3
+import csv
 import bcrypt
 from flask import Flask, redirect, url_for, render_template, request, session
 from database import db
@@ -16,6 +17,53 @@ app = Flask(__name__)
 # ADD APP CONFIGS
 
 ###   Methods for site functionalities   ###
+
+# Method to create a listing entity in the database
+def createListing(dbPath, csvPath):
+    # Connect to the SQLite database using the passed dbPath
+    conn = sqlite3.connect(dbPath)
+    cursor = conn.cursor()
+    
+    try:
+        # Open the CSV file and read data
+        with open(csvPath, 'r') as file:  # Use csvPath here
+            reader = csv.DictReader(file)
+            
+            # Iterate through each row in the CSV file
+            for row in reader:
+                # Insert listing data into the listing table
+                cursor.execute('''
+                    INSERT INTO listing (listid, title, company, position, salary, type, sourceLink, description)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                ''', (
+                    row['title'],
+                    row['company'],
+                    row['position'],
+                    row['salary'],
+                    row['description'],
+                    row['sourceLink'],
+                    row['type']
+                ))
+        
+        # Commit the transaction
+        conn.commit()
+        print("Listings created successfully from CSV.")
+    
+    except sqlite3.Error as e:
+        # Handle any database errors
+        print("Error creating listings from CSV:", e)
+    
+    finally:
+        # Close the connection
+        conn.close()
+
+
+# Main section to execute the function
+if __name__ == "__main__":
+    dbPath = '/database.db'
+    csvPath = '/listings.csv'
+
+    createListing(dbPath, csvPath)
 
 # Method to populate job listings to home/index page
 def populateListings():
