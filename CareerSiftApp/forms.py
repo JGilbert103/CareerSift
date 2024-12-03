@@ -27,8 +27,13 @@ class RegisterForm(FlaskForm):
 
         # Checking if the email is already registered to an account
         def validateEmail(self, field):
-            if db.session.query(user).filter_by(email=field.data).count() != 0:
+            if db.session.query(user).filter_by(email=field.data).count() > 0:
                 raise ValidationError('Email registered to another user')
+
+        # Checking if the username is already registered to an account
+        def validateUsername(self, field):
+            if db.session.query(user).filter_by(username=field.data).count() > 0:
+                raise ValidationError('Username is already registered to another user')
 
 # Method for login form functionality
 class LoginForm(FlaskForm):

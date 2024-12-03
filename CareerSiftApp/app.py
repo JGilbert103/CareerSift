@@ -5,10 +5,10 @@ import csv
 import bcrypt
 from flask import Flask, redirect, url_for, render_template, request, session
 from database import db
-from models import User as User
-from models import Listing as listing
-from models import SavedListing as SavedListing
-from models import Messages as Messages
+from models import user as user
+from models import listing as listing
+from models import savedListing as savedListing
+from models import messages as messages
 from forms import RegisterForm, LoginForm
 import jobScraper
 
@@ -57,7 +57,6 @@ def createListing(dbPath, csvPath):
         # Close the connection
         conn.close()
 
-
 # Main section to execute the function
 if __name__ == "__main__":
     dbPath = '/database.db'
@@ -85,25 +84,25 @@ def populateListings():
 
 ## Method for registering a user
 @app.route('/register', methods=['POST', 'GET'])
-def register();
+def register():
     regForm = RegisterForm()
 
-    if request.method == 'POST' and form.validate_on_submit():
+    if request.method == 'POST' and regForm.validate_on_submit():
         # Salting and hashing user input for password
-        shpass = bcrypt.hashpw(request.form['password'].encode('utf=8'), bcrypt.gensalt())
+        shpass = bcrypt.hashpw(request.form['password'].encode('utf-8'), bcrypt.gensalt())
 
         # Gathering user data entered to the application
         username = request.form['username']
 
         # Create a new user model
-        nUser = User(username, shpass, request.form['email'], isadmin)
+        newUser = user(username, shpass, request.form['email'])
 
         # Add gathered data to the database for a new user
         db.session.add(newUser)
         db.session.commit()
 
         # Saving the users session
-        session['newUser'] = username
+        session['user'] = username
         # Generating a userid for the user
         session['userid'] = newUser.userid 
 
