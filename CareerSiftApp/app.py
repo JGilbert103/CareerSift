@@ -38,7 +38,7 @@ def createListing():
                     salary=row.get('salary', '').strip(),
                     type=row.get('type', '').strip(),
                     sourceLink=row.get('sourceLink', '').strip(),
-                    description=row.get('description', '').strip(),
+                    description=row.get('description', '').strip()
                 )
                 # Add listing to the database
                 db.session.add(newListing)
@@ -47,10 +47,10 @@ def createListing():
             db.session.commit()
 
         except FileNotFoundError:
-            flash("CSV file not found. Please ensure 'listings.csv' exists in the application directory.", "error")
+            print("CSV file not found. Please ensure 'listings.csv' exists in the application directory.", "error")
         except Exception as e:
             db.session.rollback()
-            flash(f"Error creating listings: {e}", "error")
+            print(f"Error creating listings: {e}", "error")
 
 
 # Method for removing listings (admin function) ## NEEDS WORK ##
