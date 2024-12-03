@@ -34,20 +34,20 @@
         <div class="listing">
             <!--Listing info-->
             <div class="listing-nav">
-                <a href="index.html"><img class="arrow" src="/static/LeftArrow.png" alt="Go Back" width="20px" height="20px"></a>
+                <a href="{{ url_for('index') }}"><img class="arrow" src="/static/LeftArrow.png" alt="Go Back" width="20px" height="20px"></a>
                 <img class="job-source" src="/static/IndeedIcon.svg" alt="From Snagajob" width="20px" height="20px">
             </div>
-            <h2>Job Title</h2>
-            <p>Company Name</p>
+            <h2>{{ listing[1] }}</h2>
+            <p>{{ listing[2] }}</p>
             <hr>
-            <p>Job Description</p>
+            <p>{{ listing[7] }}</p>
             <hr>
             <div class="job-info">
-                <p>Position</p>
+                <p>{{ listing[3] }}</p>
                 <p>Location</p>
-                <p>Salary</p>
+                <p>{{ listing[4] }}</p>
             </div>
-            <a href="https://www.google.com"><button>Apply</button></a> <!-- goes to google-->
+            <a href="{{ listing.sourceLink }}"><button>Apply</button></a> <!-- goes to google-->
         </div>
     </body>
 </html>

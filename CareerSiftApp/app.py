@@ -103,6 +103,25 @@ def populateListings():
     # Returning jobs
     return jobs
 
+# Method to handle populating a specific listing when clicked
+def getData(listid):
+    conn = sqlite3.connect('CareerSiftDB.db')
+    cursor = conn.cursor()
+    # Querying the database for listings
+    cursor.execute("""
+        SELECT listid, title, company, position, salary, type, sourcelink, description
+        FROM listing
+        WHERE listid = ?
+    """, (listid,)) 
+    
+    # Fetching the listing
+    listingData = cursor.fetchone()
+    
+    # Closing the connection to the database
+    conn.close()
+
+    return listingData
+
 ###   Methods to handle register, login, and logout   ###
 
 ## Method for registering a user
@@ -287,7 +306,7 @@ def contact():
 ## ADD SAVED FUNCTIONALITY
 @app.route('/saved', methods=[])
 
-## Method for settings page
+# Method for settings page
 @app.route('/settings.html', methods=['GET'])
 def settings():
     # Checking which users settings to access
@@ -298,6 +317,15 @@ def settings():
         # Redirect user to settings page
         return render_template("settings.html")    
 
+# Method for listing page
+@app.route('/listing/<int:listid>', methods=['GET'])
+def listing(listid):
+    listingData = getData(listid)
+
+    if listingData:
+        return render_template('listing.html', listing=listingData)
+    else:
+        return "Listing not found", 404
 
 
 

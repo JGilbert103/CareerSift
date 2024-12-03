@@ -7,8 +7,6 @@ from database import db
 
 # Method for register form functionality
 class RegisterForm(FlaskForm):
-    class Meta:
-        csrf = False
         username = StringField('Username', validators=[Length(1, 25), DataRequired()])
         password = PasswordField('Password', validators=[DataRequired(), Length(min=10, max=25), EqualTo('confirmPassword', message="Passwords must match")])
         confirmPassword = PasswordField('Confirm Password', validators=[Length(min=10, max=25)])
