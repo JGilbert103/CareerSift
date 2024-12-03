@@ -1,31 +1,6 @@
 import sqlite3
 import csv
 
-#Function to add a user to the database
-def addUser(dbPath, username, password, email, isadmin):
-    # Connect to the SQLite database
-    conn = sqlite3.connect('CareerSiftApp/database.db')
-    cursor = conn.cursor()
-    
-    try:
-        # Insert a new user into the user table
-        cursor.execute('''
-            INSERT INTO user (username, password, email)
-            VALUES (?, ?, ?, ?)
-        ''', (username, password, email))
-        
-        # Commit the transaction
-        conn.commit()
-        print("User added successfully.")
-    
-    except sqlite3.Error as e:
-        # Handle any database errors
-        print("Error adding user:", e)
-    
-    finally:
-        # Close the connection
-        conn.close()
-
 #Function for users to save a listing 
 def saveListing(dbPath, userid, listid):
     # Connect to the SQLite database
