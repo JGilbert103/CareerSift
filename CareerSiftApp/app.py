@@ -100,7 +100,7 @@ def showAbout():
 ## ADD COMPARE PAGE FUNCTIONALITY
 @app.route('/compare', methods=[])
 
-## ADD LISTING FUNCTIONALITY
+## ADD LISTING FUNCTIONALITY - Note: LISTINGS SHOWN ON INDEX PAGE
 @app.route('/listings', methods=[])
 
 ## ADD SAVED FUNCTIONALITY

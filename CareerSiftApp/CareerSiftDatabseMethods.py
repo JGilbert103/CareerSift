@@ -4,7 +4,7 @@ import csv
 #Function to add a user to the database
 def addUser(dbPath, username, password, email, isadmin):
     # Connect to the SQLite database
-    conn = sqlite3.connect('middletempfolder/database.db')
+    conn = sqlite3.connect('CareerSiftApp/database.db')
     cursor = conn.cursor()
     
     try:
@@ -29,7 +29,7 @@ def addUser(dbPath, username, password, email, isadmin):
 #Function for users to save a listing 
 def saveListing(dbPath, userid, listid):
     # Connect to the SQLite database
-    conn = sqlite3.connect('middletempfolder/database.db')
+    conn = sqlite3.connect('CareerSiftApp/database.db')
     cursor = conn.cursor()
     
     try:
@@ -58,7 +58,7 @@ def saveListing(dbPath, userid, listid):
 #Function for admins to be able to delete listings
 def removeListing(dbPath, listid):
     # Connect to the SQLite database
-    conn = sqlite3.connect('middletempfolder/database.db')
+    conn = sqlite3.connect('CareerSiftApp/database.db')
     cursor = conn.cursor()
     
     try:
