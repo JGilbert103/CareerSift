@@ -42,7 +42,7 @@ def createListing(dbPath, csvPath):
 
 # Main section to execute the function
 if __name__ == "__main__":
-    dbPath = 'middletempfolder/database.db'
-    csvPath = 'JobScraper/listings.csv'
+    dbPath = 'CareerSiftApp/database.db'
+    csvPath = 'CareerSiftApp/listings.csv'
 
     createListing(dbPath, csvPath)
