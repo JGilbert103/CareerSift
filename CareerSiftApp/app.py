@@ -18,51 +18,70 @@ app = Flask(__name__)
 
 ###   Methods for site functionalities   ###
 
-# Method to create a listing entity in the database
-def createListing(dbPath, csvPath):
-    # Connect to the SQLite database using the passed dbPath
-    conn = sqlite3.connect(dbPath)
-    cursor = conn.cursor()
+# Method to create a listing entity in the database ## NEEDS WORK ##
+def createListing():
+    # Path to CSV file
+    csvPath = os.path.join(os.path.dirname(__file__), 'listings.csv')
     
     try:
         # Open the CSV file and read data
-        with open(csvPath, 'r') as file:  # Use csvPath here
-            reader = csv.DictReader(file)
+        with open(csvPath, 'r') as csvFile:
+            reader = csv.DictReader(csvFile)
             
             # Iterate through each row in the CSV file
             for row in reader:
                 # Insert listing data into the listing table
-                cursor.execute('''
-                    INSERT INTO listing (listid, title, company, position, salary, type, sourceLink, description)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                ''', (
-                    row['title'],
-                    row['company'],
-                    row['position'],
-                    row['salary'],
-                    row['description'],
-                    row['sourceLink'],
-                    row['type']
-                ))
-        
-        # Commit the transaction
-        conn.commit()
-        print("Listings created successfully from CSV.")
-    
-    except sqlite3.Error as e:
-        # Handle any database errors
-        print("Error creating listings from CSV:", e)
-    
-    finally:
-        # Close the connection
-        conn.close()
+                newListing = listing(
+                    title=row.get('title', '').strip(),
+                    company=row.get('company', '').strip(),
+                    position=row.get('position', '').strip(),
+                    salary=row.get('salary', '').strip(),
+                    type=row.get('type', '').strip(),
+                    sourceLink=row.get('sourceLink', '').strip(),
+                    description=row.get('description', '').strip(),
+                )
+                # Add listing to the database
+                db.session.add(newListing)
 
-# Main section to execute the function
-if __name__ == "__main__":
-    dbPath = '/database.db'
-    csvPath = '/listings.csv'
+            # Commit changes to the database
+            db.session.commit()
 
-    createListing(dbPath, csvPath)
+        except FileNotFoundError:
+            flash("CSV file not found. Please ensure 'listings.csv' exists in the application directory.", "error")
+        except Exception as e:
+            db.session.rollback()
+            flash(f"Error creating listings: {e}", "error")
+
+
+# Method for removing listings (admin function) ## NEEDS WORK ##
+#@app.route('/removeListing/<int:listid>', methods=['POST'])
+def removeListing(listid):
+     if 'user' not in session or not session.get('isadmin'):
+        # Restrict access to admins only
+        flash("Unauthorized access. Admins only.", "error")
+        return redirect(url_for('index'))
+
+    try:
+        # Query the listing by listid
+        listing = Listing.query.get(listid)
+
+        if listing:
+            # Remove the listing
+            db.session.delete(listing)
+            db.session.commit()
+            flash(f"Listing ID {listid} removed successfully.", "success")
+        else:
+            flash(f"Listing ID {listid} not found.", "warning")
+    except Exception as e:
+        # Handle database errors
+        db.session.rollback()
+        flash(f"Error removing listing: {e}", "error")
+    
+    return redirect(url_for('admins'))
+
+
+
+
 
 # Method to populate job listings to home/index page
 def populateListings():
@@ -194,5 +213,11 @@ def showSettings():
 
 
 ## Main Method
-if __name__ == "__main__":
+if __name__ == '__main__':
+    from app import app
+    with app.app_context():
+        # Run the createListing function
+        createListing()
+
+    # Start the Flask application
     app.run(debug=True)
