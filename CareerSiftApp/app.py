@@ -252,9 +252,28 @@ def showAbout():
 
 ## ADD CONTACT PAGE FUNCTIONALITY
 @app.route('/contact', methods=['GET'])
-def showContact():
-    # Redirect user to contact page
-    return render_template("contact.html")
+def contact():
+    form = ContactForm()
+
+    if request.method == 'POST' and form.validate_on_submit():
+        '''
+        # Save the contact form message to the database (or process as needed)
+        contact_message = ContactMessage(
+            email=form.email.data,
+            issue=form.issue.data
+        )
+
+        # Save the contact message to the database
+        db.session.add(contact_message)
+        db.session.commit()
+
+        # Flash a success message
+        flash('Your message has been sent!', 'success')
+        
+        return redirect(url_for('contact'))  # Redirect to the contact page after submission
+        '''
+        
+    return render_template('contact.html', form=form)
 
 ## ADD COMPARE PAGE FUNCTIONALITY
 @app.route('/compare', methods=[])

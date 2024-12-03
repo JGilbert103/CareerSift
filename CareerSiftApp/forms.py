@@ -49,10 +49,8 @@ class ContactForm(FlaskForm):
     class Meta:
         csrf = False
         # Input for email
-        email = StringField('Email', [Email(message='Email is not valid'), DataRequired()])
-
-        # Input for message/issue
-        issue = StringField('Issue', validators=[length(1, 512)])
-
-        # Form submission
+        email = StringField('Email', validators=[Email(message='Email is not valid'), DataRequired()])
+        # Input for issue
+        issue = StringField('Issue', validators=[Length(min=1, max=512), DataRequired()])
+        # Submit form
         submit = SubmitField('Submit')
