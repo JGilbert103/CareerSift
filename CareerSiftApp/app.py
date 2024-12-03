@@ -83,9 +83,12 @@ def login():
 ## Logging out a user
 @app.route('/logout')
 def logout():
+    # Checking if user is currently signed in 
     if session.get('user'):
+        # Clearing session for the user
         session.clear()
 
+    # Redirect user to home/index page
     return redirect(url_for('index'))
 
 # Method for about us page

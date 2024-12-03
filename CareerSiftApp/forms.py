@@ -47,3 +47,16 @@ class LoginForm(FlaskForm):
         def validateUser(self, field)
             if db.session.query(user).filter_by(username=field.data).count() != 0:
                     raise ValidationError('Username or Password is not valid')
+
+# Method for contact us form functionality
+class ContactForm(FlaskForm):
+    class Meta:
+        csrf = False
+        # Input for email
+        email = StringField('Email', [Email(message='Email is not valid'), DataRequired()])
+
+        # Input for message/issue
+        issue = StringField('Issue', validators=[length(1, 512)])
+
+        # Form submission
+        submit = SubmitField('Submit')
