@@ -28,29 +28,27 @@ class RegisterForm(FlaskForm):
 
 # Method for login form functionality
 class LoginForm(FlaskForm):
-    class Meta:
-        csrf = False
         username = StringField('Username', validators=[DataRequired()])
         password = PasswordField('Password', validators=[DataRequired()])
         submit = SubmitField('Login')
 
-        # Validating username and password
+       # Validating username exists in the database
         def validate_username(self, field):
-            user = user.query.filter_by(username=field.data).first()
-        if not user:
-            raise ValidationError('Username does not exist')
+            existingUser = user.query.filter_by(username=field.data).first()
+            if not user:
+                raise ValidationError('Username does not exist')
 
-    def validate_password(self, field):
-        if field.data and not bcrypt.checkpw(field.data.encode('utf-8'), field.data.encode('utf-8')):
-            raise ValidationError('Incorrect password')
+    # Validating password is correct
+        def validate_password(self, field):
+            existingUserser = user.query.filter_by(username=self.username.data).first()
+            if user and not bcrypt.checkpw(field.data.encode('utf-8'), user.password.encode('utf-8')):
+                raise ValidationError('Incorrect password')
 
 # Method for contact us form functionality
 class ContactForm(FlaskForm):
-    class Meta:
-        csrf = False
-        # Input for email
-        email = StringField('Email', validators=[Email(message='Email is not valid'), DataRequired()])
-        # Input for issue
-        issue = StringField('Issue', validators=[Length(min=1, max=512), DataRequired()])
-        # Submit form
-        submit = SubmitField('Submit')
+    # Input for email
+    email = StringField('Email', validators=[Email(message='Email is not valid'), DataRequired()])
+    # Input for issue
+    issue = StringField('Issue', validators=[Length(min=1, max=512), DataRequired()])
+    # Submit form
+    submit = SubmitField('Submit')

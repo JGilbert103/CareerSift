@@ -1,6 +1,9 @@
-from database import db
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship
+from database import db
+
+db = SQLAlchemy()
 
 class user(db.Model):
     userid = db.Column('userid', db.Integer, primary_key=True)

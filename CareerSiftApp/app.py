@@ -4,13 +4,14 @@ import sqlite3
 import csv
 import bcrypt
 from flask import Flask, redirect, url_for, render_template, request, session, jsonify
+from flask_sqlalchemy import SQLAlchemy
 from database import db
 from models import user as user
 from models import listing as listing
 from models import savedListing as savedListing
 from models import messages as messages
-from forms import RegisterForm, LoginForm
-import jobScraper
+from forms import RegisterForm, LoginForm, ContactForm
+#import jobScraper
 
 app = Flask(__name__)
 
@@ -20,6 +21,9 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'your-secret-key'  # Set your secret key here
 
 db.init_app(app)
+
+with app.app_context():
+    db.create_all()
 
 ###   Methods for site functionalities   ###
 
@@ -88,7 +92,7 @@ def removeListing(listid):
 # Method to populate job listings to home/index page
 def populateListings():
     # Connecting to the database
-    conn = sqlite3.connect('CareerSiftDB.db') ## CHANGE DATABASE FILE FORMAT ##
+    conn = sqlite3.connect('CareerSiftDB.db')
     cursor = conn.cursor()
     # Querying the database for listings
     cursor.execute("SELECT listid, title, company, position, salary, type, sourcelink, description FROM listing ")
@@ -102,7 +106,7 @@ def populateListings():
 ###   Methods to handle register, login, and logout   ###
 
 ## Method for registering a user
-@app.route('/register', methods=['POST', 'GET'])
+@app.route('/register.html', methods=['POST', 'GET'])
 def register():
     form = RegisterForm()
 
@@ -132,15 +136,15 @@ def register():
     return render_template('register.html', form=form)
 
 ## Method for logging in a user
-@app.route('/login', methods=['POST', 'GET'])
+@app.route('/login.html', methods=['POST', 'GET'])
 def login():
     form = LoginForm()
     # Validating login form on submission
     if form.validate_on_submit():
         # If form is valid, searching the databse for the matching user
-        user = db.session.query(user).filter_by(username=request.form['username']).one()
+        user = db.session.query(user).filter_by(username=form.username.data).first()
         # Checking user password
-        if bcrypt.checkpw(request.form['password'].encode('utf-8'), user.password):
+        if user and bcrypt.checkpw(form.password.data.encode('utf-8'), user.password.encode('utf-8')):
             # If the password is correct, adding the user to the session
             session['user'] = user.username
             session['userid'] = user.userid
@@ -148,14 +152,14 @@ def login():
             return redirect(url_for('index'))
         
         # If the password was incorrect, send error message
-        form.password.errors = ["Incorrect username or password"]
+        form.password.errors.append = ["Incorrect username or password"]
         # Redirect user to login form
-        return render_template("login.html", form=logForm)
+        return render_template("login.html", form=LoginForm)
 
     # If the form did not validate
     else:
         # Redirect user to login form
-        return render_template("login.html", form=logForm)
+        return render_template("login.html", form=LoginForm)
 
 ## Logging out a user
 @app.route('/logout')
@@ -247,13 +251,13 @@ def unsaveListing():
         return jsonify({'error': str(e)}), 500  # Handle other errors
 
 # Method for about us page
-@app.route('/about', methods=['GET'])
-def showAbout():
+@app.route('/about.html', methods=['GET'])
+def about():
     # Redirect user to about us page
     return render_template("about.html")
 
 ## ADD CONTACT PAGE FUNCTIONALITY
-@app.route('/contact', methods=['GET'])
+@app.route('/contact.html', methods=['GET'])
 def contact():
     form = ContactForm()
 
@@ -275,7 +279,7 @@ def contact():
         return redirect(url_for('contact'))  # Redirect to the contact page after submission
         '''
 
-    return render_template('contact.html', form=form)
+    return render_template('contact.html', form=ContactForm)
 
 ## ADD COMPARE PAGE FUNCTIONALITY
 @app.route('/compare', methods=[])
@@ -284,8 +288,8 @@ def contact():
 @app.route('/saved', methods=[])
 
 ## Method for settings page
-@app.route('/settings', methods=['GET'])
-def showSettings():
+@app.route('/settings.html', methods=['GET'])
+def settings():
     # Checking which users settings to access
     if session.get('user'):
         # Redirect user to their settings page
@@ -300,10 +304,10 @@ def showSettings():
 
 ## Main Method
 if __name__ == '__main__':
-    from app import app
-    with app.app_context():
+    #from app import app
+    #with app.app_context():
         # Run the createListing function
-        createListing()
+        #createListing()
 
     # Start the Flask application
     app.run(debug=True)
