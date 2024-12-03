@@ -51,14 +51,15 @@ def createListing():
             # Commit changes to the database
             db.session.commit()
 
-        except FileNotFoundError:
-            print("CSV file not found. Please ensure 'listings.csv' exists in the application directory.", "error")
-        except Exception as e:
-            db.session.rollback()
-            print(f"Error creating listings: {e}", "error")
+    except FileNotFoundError:
+        print("CSV file not found. Please ensure 'listings.csv' exists in the application directory.", "error")
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error creating listings: {e}", "error")
 
 # Method for removing listings (admin function) ## NEEDS WORK ##
-#@app.route('/removeListing/<int:listid>', methods=['POST'])
+'''
+@app.route('/removeListing/<int:listid>', methods=['POST'])
 def removeListing(listid):
      if 'user' not in session or not session.get('isadmin'):
         # Restrict access to admins only
@@ -82,6 +83,7 @@ def removeListing(listid):
         flash(f"Error removing listing: {e}", "error")
     
     return redirect(url_for('admins'))
+'''
 
 # Method to populate job listings to home/index page
 def populateListings():
@@ -153,7 +155,7 @@ def login():
     # If the form did not validate
     else:
         # Redirect user to login form
-        return render_template("login.html" form=logForm)
+        return render_template("login.html", form=logForm)
 
 ## Logging out a user
 @app.route('/logout')
@@ -272,7 +274,7 @@ def contact():
         
         return redirect(url_for('contact'))  # Redirect to the contact page after submission
         '''
-        
+
     return render_template('contact.html', form=form)
 
 ## ADD COMPARE PAGE FUNCTIONALITY

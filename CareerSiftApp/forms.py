@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, TextAreaField
 from wtforms.validators import Length, Regexp, DataRequired, EqualTo, Email
-from wtforms import ValidationError
+from wtforms import ValidationError, BooleanField
 from models import user
 from database import db
 
@@ -36,7 +36,7 @@ class LoginForm(FlaskForm):
 
         # Validating username and password
         def validate_username(self, field):
-        user = User.query.filter_by(username=field.data).first()
+            user = user.query.filter_by(username=field.data).first()
         if not user:
             raise ValidationError('Username does not exist')
 
