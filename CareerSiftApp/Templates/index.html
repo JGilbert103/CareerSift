@@ -28,11 +28,37 @@
             
                 stars.forEach((star) => {
                     star.addEventListener("click", () => {
+                        const listingId = star.dataset.listid;
+                        const isSaved = star.src.includes("star-icon-filled.png");
+                        
                         if (star.src.includes("star-icon.png")) {
                             star.src = "/static/star-icon-filled.png";
                         } else {
                             star.src = "/static/star-icon.png";
                         }
+
+                        star.src = isSaved ? "/static/star-icon.png" : "/static/star-icon-filled.png";
+
+                        fetch(isSaved ? '/unsaveListing' : '/saveListing', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ listid: listingId }),
+                        })
+                        .then((response) => {
+                            if (!response.ok) {
+                                throw new Error('Failed to save or unsave listing.');
+                            }
+                        })
+                        .catch((error) => {
+                            console.error(error);
+                            // Revert the star appearance if the request fails
+                            star.src = isSaved 
+                                ? "/static/star-icon-filled.png" 
+                                : "/static/star-icon.png";
+                            alert('An error occurred while saving or unsaving the listing.');
+                        });
                     });
                 });
             });
@@ -83,17 +109,17 @@
                     {% for job in jobs %}
                     <div class="card">
                         {% if user %}
-                        <img class="star" src="/static/star-icon.png"> <!--Only if logged in-->
+                        <img class="star" src="/static/star-icon.png" data-listid="{{ job[0] }}"> <!--Only if logged in-->
                         {% endif %}
                         <br>
                         <a href="listing.html">
-                            <h2>{{ job[0] }}</h2>
-                            <p>{{ job[1] }}</p>
+                            <h2>{{ job[1] }}</h2>
+                            <p>{{ job[2] }}</p>
                             <hr>
                             <div class="card-info">
-                                <p>{{ job[2] }}</p>
+                                <p>{{ job[3] }}</p>
                                 <p>Location</p>
-                                <p>{{ job[4] }}</p>
+                                <p>{{ job[5] }}</p>
                             </div>
                         </a>
                     </div>

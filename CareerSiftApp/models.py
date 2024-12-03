@@ -34,9 +34,14 @@ class Listing(db.model):
         self.sourceLink = sourceLink
         self.description = description
 
-class SavedListing(db.model):
+class SavedListing(db.Model):
+    __tablename__ = 'savedListing'
 
-## Create model for saved listing ##
+    userid = Column(Integer, ForeignKey('user.userid'), primary_key=True)
+    listid = Column(Integer, ForeignKey('listing.listid'), primary_key=True)
+
+    user = relationship('user', backref='savedListings')
+    listing = relationship('listing', backref='savedbyusers')
 
 class Messages(db.model):
     messageid = db.Column('messageid', db.Integer, primary_key=True)

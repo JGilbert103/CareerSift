@@ -3,7 +3,7 @@ import os
 import sqlite3
 import csv
 import bcrypt
-from flask import Flask, redirect, url_for, render_template, request, session
+from flask import Flask, redirect, url_for, render_template, request, session, jsonify
 from database import db
 from models import user as user
 from models import listing as listing
@@ -14,7 +14,10 @@ import jobScraper
 
 app = Flask(__name__)
 
-# ADD APP CONFIGS
+# App configs
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///CareerSiftDB.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db.init_app(app)
 
 ###   Methods for site functionalities   ###
 
@@ -52,7 +55,6 @@ def createListing():
             db.session.rollback()
             print(f"Error creating listings: {e}", "error")
 
-
 # Method for removing listings (admin function) ## NEEDS WORK ##
 #@app.route('/removeListing/<int:listid>', methods=['POST'])
 def removeListing(listid):
@@ -79,25 +81,19 @@ def removeListing(listid):
     
     return redirect(url_for('admins'))
 
-
-
-
-
 # Method to populate job listings to home/index page
 def populateListings():
     # Connecting to the database
     conn = sqlite3.connect('CareerSiftDB.db') ## CHANGE DATABASE FILE FORMAT ##
     cursor = conn.cursor()
     # Querying the database for listings
-    cursor.execute("SELECT title, company, position, salary, type, sourcelink, description FROM listing ")
+    cursor.execute("SELECT listid, title, company, position, salary, type, sourcelink, description FROM listing ")
     # Saving listings found to jobs variable
     jobs = cursor.fetchall()
     # Closing connection to the database
     conn.close()
     # Returning jobs
     return jobs
-
-
 
 ###   Methods to handle register, login, and logout   ###
 
@@ -184,6 +180,68 @@ def index():
     else:
             return render_template("index.html", jobs=jobListings)
 
+# Method for save listings page
+@app.route('/saveListing', methods=['POST'])
+def saveListing():
+    # Recieve the incoming json data from front end
+    data = request.json
+    # Saving the listid for the saved listing
+    listid = data.get('listid')
+    # Saving the userid for the saved listing
+    userid = session.get('userid')
+    # Handling error if the user is not logged in
+    if not userid:
+        return jsonify({'error': 'User not logged in'}), 401
+
+    try:
+        # Check if the listing is already saved by this user
+        existingListing = savedListing.query.filter_by(userid=userid, listid=listid).first()
+        if existingListing:
+            return jsonify({'error': 'This listing is already saved by the user'}), 400
+
+        # Create a new saved listing record
+        newListing = savedListing(userid=userid, listid=listid)
+
+        # Add the new saved listing to the session and commit it to the database
+        db.session.add(newListing)
+        db.session.commit()
+
+        return jsonify({'message': 'Listing saved successfully'}), 200  # Success response
+
+    except Exception as e:
+        db.session.rollback()  # Rollback in case of error
+        return jsonify({'error': str(e)}), 500  # Handle other errors
+
+# Method for unsave listings page
+@app.route('/unsaveListing', methods=['POST'])
+def unsaveListing():
+    data = request.json
+    listid = data.get('listid')
+    userid = session.get('userid')
+
+    if not userid:
+        return jsonify({'error': 'User not logged in'}), 401
+
+    try:
+        # Find the saved listing entry to delete
+        exsistingSavedListing = savedListing.query.filter_by(userid=userid, listid=listid).first()
+
+        # If the saved listing doesn't exist, return an error
+        if not exsistingSavedListing:
+            return jsonify({'error': 'This listing is not saved by the user'}), 400
+
+        # Delete the saved listing
+        db.session.delete(exsistingSavedListing)
+
+        # Commit the transaction
+        db.session.commit()
+
+        return jsonify({'message': 'Listing unsaved successfully'}), 200  # Success response
+
+    except Exception as e:
+        db.session.rollback()  # Rollback in case of error
+        return jsonify({'error': str(e)}), 500  # Handle other errors
+
 # Method for about us page
 @app.route('/about', methods=['GET'])
 def showAbout():
@@ -191,7 +249,10 @@ def showAbout():
     return render_template("about.html")
 
 ## ADD CONTACT PAGE FUNCTIONALITY
-@app.route('/contact', methods=[])
+@app.route('/contact', methods=['GET'])
+def showContact():
+    # Redirect user to contact page
+    return render_template("contact.html")
 
 ## ADD COMPARE PAGE FUNCTIONALITY
 @app.route('/compare', methods=[])
@@ -209,6 +270,8 @@ def showSettings():
     else:
         # Redirect user to settings page
         return render_template("settings.html")    
+
+
 
 
 
