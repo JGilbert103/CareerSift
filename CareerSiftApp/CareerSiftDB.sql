@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS user (
     username VARCHAR(25),
     password VARCHAR(25),
     email VARCHAR(75),
-    isadmin BOOLEAN DEFAULT FALSE,
+    isadmin BOOLEAN DEFAULT FALSE
 );
 
 -- Adding a user for testing
@@ -28,7 +28,7 @@ CREATE TABLE listing (
     salary VARCHAR(25),
     type VARCHAR(25),
     sourceLink TEXT,
-    description TEXT,
+    description TEXT
 );
 
 -- Adding a listing for testing
