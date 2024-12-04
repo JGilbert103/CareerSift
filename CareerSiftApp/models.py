@@ -3,17 +3,14 @@ from sqlalchemy import Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 from database import db
 
-db = SQLAlchemy()
-
 class user(db.Model):
     userid = db.Column('userid', db.Integer, primary_key=True)
     username = db.Column('username', db.String(25))
     password = db.Column('password', db.String(25))
     email = db.Column('email', db.String(75))
-    isadmin = db.Column('isadmin', db.Boolean)
+    isadmin = db.Column('isadmin', db.Boolean, default=False)
 
-    def __init__(self, userid, username, password, email, isadmin):
-        self.userid = userid
+    def __init__(self, username, password, email, isadmin):
         self.username = username
         self.password = password
         self.email = email

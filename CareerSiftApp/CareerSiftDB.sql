@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS user (
 
 -- Adding a user for testing
 INSERT INTO user (userid, username, password, email, isadmin)
-VALUES(0, 'owen', 'P@ssw0rd!', 'ohartzel@charlotte.edu', 'true');
+VALUES(0, 'owen', 'P@ssw0rd!', 'ohartzel@charlotte.edu', TRUE);
 
 -- Tables for listings
 CREATE TABLE listing (

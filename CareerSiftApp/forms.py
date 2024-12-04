@@ -4,6 +4,7 @@ from wtforms.validators import Length, Regexp, DataRequired, EqualTo, Email
 from wtforms import ValidationError, BooleanField
 from models import user
 from database import db
+import bcrypt
 
 # Method for register form functionality
 class RegisterForm(FlaskForm):
@@ -38,8 +39,8 @@ class LoginForm(FlaskForm):
 
     # Validating password is correct
         def validate_password(self, field):
-            existingUserser = user.query.filter_by(username=self.username.data).first()
-            if user and not bcrypt.checkpw(field.data.encode('utf-8'), user.password.encode('utf-8')):
+            existingUser = user.query.filter_by(username=self.username.data).first()
+            if existingUser and not bcrypt.checkpw(field.data.encode('utf-8'), user.password.encode('utf-8')):
                 raise ValidationError('Incorrect password')
 
 # Method for contact us form functionality

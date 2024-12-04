@@ -132,23 +132,38 @@ def register():
     if request.method == 'POST' and form.validate_on_submit():
         # Salting and hashing user input for password
         shpass = bcrypt.hashpw(request.form['password'].encode('utf-8'), bcrypt.gensalt())
-
         # Gathering user data entered to the application
         username = request.form['username']
+        email = request.form['email']
+       
+        # Create a new user object
+        conn = sqlite3.connect('path_to_your_database.db')  # Replace with your database path
+        cursor = conn.cursor()
 
-        # Create a new user model
-        newUser = user(username, shpass, request.form['email'])
+        cursor.execute("SELECT * FROM user WHERE username = ? OR email = ?", (username, email))
+        existingUser = cursor.fetchone()
 
-        # Add gathered data to the database for a new user
-        db.session.add(newUser)
-        db.session.commit()
+        if existing_user:
+            flash('Username or Email already taken', 'error')
+            conn.close()
+            return redirect(url_for('register'))
+        
+        cursor.execute("INSERT INTO user (username, password, email, isadmin) VALUES (?, ?, ?, ?)",
+                       (username, shpass, email, False))  # Assuming default isadmin value is False
+        conn.commit()
 
-        # Saving the users session
+        cursor.execute("SELECT userid FROM user WHERE username = ?", (username,))
+        newUser = cursor.fetchone()
+
+        conn.close()
+        
         session['user'] = username
-        # Generating a userid for the user
-        session['userid'] = newUser.userid 
+        session['userid'] = newUser[0]
 
         # Redirect user to home/index page
+        return redirect(url_for('index'))
+
+        flash('Registration successful! Welcome to the site.', 'success')
         return redirect(url_for('index'))
     
     # If there was an error with registering, redirect to register form
