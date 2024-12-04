@@ -227,7 +227,7 @@ def index():
 
     # Calling populateListings function
     jobListings = populateListings()
-    
+
     # Session verification and populating listings
     if session.get('user'):
             return render_template("index.html", user=session['user'], jobs=jobListings)
@@ -329,10 +329,18 @@ def contact():
     return render_template('contact.html', form=ContactForm)
 
 ## ADD COMPARE PAGE FUNCTIONALITY
-@app.route('/compare', methods=[])
+@app.route('/compare.html', methods=['GET'])
+def compare():
+    return render_template("compare.html")
 
 ## ADD SAVED FUNCTIONALITY
-@app.route('/saved', methods=[])
+@app.route('/saved.html', methods=['GET'])
+def saved():
+    # Checking which users saved listings to access
+    if session.get('user'):
+        return render_template("saved.html", user=session['user'])
+    else:
+        return render_template("saved.html")
 
 # Method for settings page
 @app.route('/settings.html', methods=['GET'])
