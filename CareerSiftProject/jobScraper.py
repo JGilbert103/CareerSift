@@ -142,6 +142,7 @@ def getIndeedListingInfo(allListingsLinkIndeed):
             jobDesc = jobDesc.replace(',', ';')
             # Remove any newlines and replace them with spaces
             jobDesc = jobDesc.replace('\n', '~~')
+            jobDesc = jobDesc.strip('&nbsp')
         except Exception as e:
             print("Could not find job description:", e)
             jobDesc = "NO JOB DESCRIPTION FOUND"
@@ -329,6 +330,7 @@ def getSnagajobListingInfo(allListingsLinkGlassdoor):
             # Job Description
             jobDescElement = driver.find_element(By.CSS_SELECTOR, 'jobs-description .job-description')
             jobDesc = jobDescElement.text.strip().replace(',', ';').replace('\n', '~~')
+            jobDesc = jobDesc.strip('&nbsp')
         except:
             print("Could not find job description")
             jobDesc = "NO JOB DESCRIPTION FOUND"
