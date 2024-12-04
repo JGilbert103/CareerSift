@@ -5,6 +5,7 @@ import csv
 import bcrypt
 from flask import Flask, redirect, url_for, render_template, request, session, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.sql import func
 from database import db
 from models import user, listing, savedListing, messages
 from forms import RegisterForm, LoginForm, ContactForm
@@ -212,9 +213,21 @@ def logout():
 # Method for home/index page
 @app.route('/')
 def index():
-    createListing()
+    # Checking if listings exist in the database before calling createListing function
+    con = sqlite3.connect('CareerSiftDB.db')
+    cursor = con.cursor()
+    cursor.execute("SELECT COUNT(listid) FROM listing")
+    row_count = cursor.fetchone()[0]
+    con.close()
+
+    # Creating listings if listing table is empty
+    if row_count == 0:
+        # Call the function to create listings
+        createListing()
+
     # Calling populateListings function
     jobListings = populateListings()
+    
     # Session verification and populating listings
     if session.get('user'):
             return render_template("index.html", user=session['user'], jobs=jobListings)
@@ -333,8 +346,8 @@ def settings():
         return render_template("settings.html")    
 
 # Method for listing page
-@app.route('/listing/<int:listid>', methods=['GET'])
-def listing(listid):
+@app.route('/listings/<int:listid>', methods=['GET'])
+def listings(listid):
     listingData = getData(listid)
 
     if listingData:
@@ -347,6 +360,7 @@ def listing(listid):
 
 ## Main Method
 if __name__ == '__main__':
-
     # Start the Flask application
     app.run(debug=True)
+
+    

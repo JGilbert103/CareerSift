@@ -112,7 +112,7 @@
                         <img class="star" src="/static/star-icon.png" data-listid="{{ job[0] }}"> <!--Only if logged in-->
                         {% endif %}
                         <br>
-                        <a href="{{ url_for('listing', listid=job[0]) }}">
+                        <a href="{{ url_for('listings', listid=job[0]) }}">
                             <h2>{{ job[1] }}</h2>
                             <p>{{ job[2] }}</p>
                             <hr>

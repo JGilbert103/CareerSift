@@ -31,22 +31,6 @@ CREATE TABLE listing (
     description TEXT
 );
 
--- Adding a listing for testing
-INSERT INTO listing (listid, title, company, position, salary, type, sourceLink, description)
-VALUES(0, 'fake title 0', 'fake company', 'fake position', '$0 a year', 'remote', 'https://www.google.com/search?q=google&oq=google&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIYCAEQLhhDGIMBGMcBGLEDGNEDGIAEGIoFMgYIAhBFGDwyBggDEEUYPDIGCAQQRRg8MgYIBRBFGDwyBggGEEUYPDIGCAcQRRhB0gEIMTI5M2owajeoAgCwAgA&sourceid=chrome&ie=UTF-8', 'this is a fake job listing for test purposes');
-
-INSERT INTO listing (listid, title, company, position, salary, type, sourceLink, description)
-VALUES(1, 'fake title 1', 'fake company', 'fake position', '$0 a year', 'remote', 'https://www.google.com/search?q=google&oq=google&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIYCAEQLhhDGIMBGMcBGLEDGNEDGIAEGIoFMgYIAhBFGDwyBggDEEUYPDIGCAQQRRg8MgYIBRBFGDwyBggGEEUYPDIGCAcQRRhB0gEIMTI5M2owajeoAgCwAgA&sourceid=chrome&ie=UTF-8', 'this is a fake job listing for test purposes');
-
-INSERT INTO listing (listid, title, company, position, salary, type, sourceLink, description)
-VALUES(2, 'fake title 2', 'fake company', 'fake position', '$0 a year', 'remote', 'https://www.google.com/search?q=google&oq=google&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIYCAEQLhhDGIMBGMcBGLEDGNEDGIAEGIoFMgYIAhBFGDwyBggDEEUYPDIGCAQQRRg8MgYIBRBFGDwyBggGEEUYPDIGCAcQRRhB0gEIMTI5M2owajeoAgCwAgA&sourceid=chrome&ie=UTF-8', 'this is a fake job listing for test purposes');
-
-INSERT INTO listing (listid, title, company, position, salary, type, sourceLink, description)
-VALUES(3, 'fake title 3', 'fake company', 'fake position', '$0 a year', 'remote', 'https://www.google.com/search?q=google&oq=google&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIYCAEQLhhDGIMBGMcBGLEDGNEDGIAEGIoFMgYIAhBFGDwyBggDEEUYPDIGCAQQRRg8MgYIBRBFGDwyBggGEEUYPDIGCAcQRRhB0gEIMTI5M2owajeoAgCwAgA&sourceid=chrome&ie=UTF-8', 'this is a fake job listing for test purposes');
-
-INSERT INTO listing (listid, title, company, position, salary, type, sourceLink, description)
-VALUES(4, 'fake title 4', 'fake company', 'fake position', '$0 a year', 'remote', 'https://www.google.com/search?q=google&oq=google&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIYCAEQLhhDGIMBGMcBGLEDGNEDGIAEGIoFMgYIAhBFGDwyBggDEEUYPDIGCAQQRRg8MgYIBRBFGDwyBggGEEUYPDIGCAcQRRhB0gEIMTI5M2owajeoAgCwAgA&sourceid=chrome&ie=UTF-8', 'this is a fake job listing for test purposes');
-
 -- Tables for saved listings
 CREATE TABLE savedListing (
     userid INTEGER,
