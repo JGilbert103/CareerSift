@@ -263,6 +263,7 @@ h3, h5 {
 .search-cards {
     width: 75%;
     margin: 0 auto;
+    height: 400px;
     position: relative;
     margin-bottom: 10px;
 }
