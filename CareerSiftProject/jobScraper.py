@@ -12,6 +12,7 @@ import nest_asyncio;
 import csv;
 import time;
 import os;
+import threading;
 
 # God Itself, the scraper
 from bs4 import BeautifulSoup;
@@ -32,9 +33,9 @@ allListingsUnfiltered = []
 
 directory = os.path.join("..", "CareerSiftApp")
 # Pretty much what the variable says
-IndeedOutputFileName = "indeedListings.csv"
-SnagajobOutputFileName = "snagajobListings.csv"
- 
+# IndeedOutputFileName = "indeedListings.csv"
+# SnagajobOutputFileName = "snagajobListings.csv"
+fullListingFileName = "listings.csv"
     
 # Use beautiful soup to retrieve indeed job listings from link
 def getIndeedListings():
@@ -213,7 +214,7 @@ def getIndeedListingInfo(allListingsLinkIndeed):
         indeedInformation.append(jobDesc)
         # indeedInformation.append(jobWholeLink)
         # Output the information to a file
-        writeToIndeedFile(indeedInformation)
+        writeToFile(indeedInformation)
         driver.quit()
     print("Ending ListingInfo")
         
@@ -221,20 +222,20 @@ def getIndeedListingInfo(allListingsLinkIndeed):
 
         # Use beautiful soup to retrieve glassdoor job listings from link
 
-def findInactiveListings():
-    with open(IndeedOutputFileName, 'r', newline='', encoding='utf-8') as csvfile:
-        csv_reader = csv.reader(csvfile)
-        headers = next(csv_reader, None)
+# def findInactiveListings():
+#     with open(IndeedOutputFileName, 'r', newline='', encoding='utf-8') as csvfile:
+#         csv_reader = csv.reader(csvfile)
+#         headers = next(csv_reader, None)
         
-        for row in csv_reader:
-            link = row[-1].strip() if len(row) > 0 else ""
-            # print(link)
-            driver = webdriver.Chrome()
-            driver.maximize_window()
-            driver.get(link)
-            # TODO IMPLEMENT FINDING INACTIVE
+#         for row in csv_reader:
+#             link = row[-1].strip() if len(row) > 0 else ""
+#             # print(link)
+#             driver = webdriver.Chrome()
+#             driver.maximize_window()
+#             driver.get(link)
+#             # TODO IMPLEMENT FINDING INACTIVE
             
-            driver.quit()  # Close the browser for this link
+#             driver.quit()  # Close the browser for this link
 
 
 
@@ -343,13 +344,13 @@ def getSnagajobListingInfo(allListingsLinkGlassdoor):
         glassDoorInformation.append(jobSite)
         glassDoorInformation.append(applyLink)
         glassDoorInformation.append(jobDesc)
-        writeToSnagajobFile(glassDoorInformation)
+        writeToFile(glassDoorInformation)
 
 
-def writeToSnagajobFile(glassDoorInformation):
-    with open(SnagajobOutputFileName, 'a', newline='', encoding='utf-8') as csvfile:
+def writeToFile(listingInformation):
+    with open(fullListingFileName, 'a', newline='', encoding='utf-8') as csvfile:
         writer = csv.writer(csvfile)
-        writer.writerow(glassDoorInformation)
+        writer.writerow(listingInformation)
 
 
 
@@ -362,22 +363,45 @@ def findDuplicates():
         
 
 # Outputs all information to a csv file after being filtered
-def writeToIndeedFile(indeedListingInfo):
-    # Opening a file and appends to it, hence the a.
-    with open(IndeedOutputFileName, 'a', newline='', encoding='utf-8') as csvfile:
-        writer = csv.writer(csvfile)
-        writer.writerow(indeedListingInfo)
+# def writeToIndeedFile(indeedListingInfo):
+#     # Opening a file and appends to it, hence the a.
+#     with open(IndeedOutputFileName, 'a', newline='', encoding='utf-8') as csvfile:
+#         writer = csv.writer(csvfile)
+#         writer.writerow(indeedListingInfo)
 
 def brokenLinks(link):
     with open("brokenIndeedLinks.csv", 'a', newline='', encoding='utf-8') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(link)
     
+def resetFile():
+    with open("listings.csv", 'w', newline='', encoding='utf-8') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(["title", "company", "position", "salary", "type", "sourceLink", "description"])
+        
+def getIndeedListingsTask():
+    # print("Getting Indeed Listings")
+    getIndeedListings()
+
+def getSnagajobListingsTask():
+    # print("Getting Snagajob Listings")
+    getSnagajobListings()
          
 while True:
     print("Opening Indeed")
-    getIndeedListings()
-    getSnagajobListings()
+    resetFile()
+    threads = [
+        threading.Thread(target=getIndeedListingsTask),
+        threading.Thread(target=getSnagajobListingsTask),
+    ]
+    
+    for thread in threads:
+        thread.start()
+        
+    for thread in threads:
+        thread.join()
+    
+    
     # findInactiveListings()
     time.sleep(300) # Let the user actually see something!
 
