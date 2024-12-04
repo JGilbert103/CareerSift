@@ -44,8 +44,8 @@ def createListing():
                 #print("link: ", sourcelink)
                 description = row["description"].strip()
 
-                #description = description.replace(';', ',')
-                #description = description.replace('~~', '\n')
+                description = description.replace(';', ',')
+                description = description.replace('~~', '\n')
 
                 #print("desc: ", description)
 
