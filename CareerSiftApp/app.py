@@ -143,8 +143,7 @@ def register():
         cursor.execute("SELECT * FROM user WHERE username = ? OR email = ?", (username, email))
         existingUser = cursor.fetchone()
 
-        if existing_user:
-            flash('Username or Email already taken', 'error')
+        if existingUser:
             conn.close()
             return redirect(url_for('register'))
         
@@ -163,8 +162,8 @@ def register():
         # Redirect user to home/index page
         return redirect(url_for('index'))
 
-        flash('Registration successful! Welcome to the site.', 'success')
-        return redirect(url_for('index'))
+    if form.errors:
+        print(f"Form errors: {form.errors}")
     
     # If there was an error with registering, redirect to register form
     return render_template('register.html', form=form)

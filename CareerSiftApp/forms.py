@@ -8,22 +8,25 @@ import bcrypt
 
 # Method for register form functionality
 class RegisterForm(FlaskForm):
-        username = StringField('Username', validators=[Length(1, 25), DataRequired()])
-        password = PasswordField('Password', validators=[DataRequired(), Length(min=10, max=25), EqualTo('confirmPassword', message="Passwords must match")])
-        confirmPassword = PasswordField('Confirm Password', validators=[Length(min=10, max=25)])
-        email = StringField('Email', validators=[Email(message="Invalid email address"), DataRequired()])
-        notifications = BooleanField('Link email for job notifications?')
-        submit = SubmitField('Register')
+    class Meta:
+        csrf = False
 
-        # Checking if the email is already registered to an account
-        def validateEmail(self, field):
-            if db.session.query(user).filter_by(email=field.data).count() > 0:
-                raise ValidationError('Email registered to another user')
+    username = StringField('Username', validators=[Length(1, 25), DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired(), EqualTo('confirmPassword', message="Passwords must match")])
+    confirmPassword = PasswordField('Confirm Password', validators=[DataRequired()])
+    email = StringField('Email', validators=[Email(message="Invalid email address"), DataRequired()])
+    notifications = BooleanField('Link email for job notifications?')
+    submit = SubmitField('Register')
 
-        # Checking if the username is already registered to an account
-        def validateUsername(self, field):
-            if db.session.query(user).filter_by(username=field.data).count() > 0:
-                raise ValidationError('Username is already registered to another user')
+    # Checking if the email is already registered to an account
+    def validateEmail(self, field):
+        if db.session.query(user).filter_by(email=field.data).count() > 0:
+            raise ValidationError('Email registered to another user')
+
+    # Checking if the username is already registered to an account
+    def validateUsername(self, field):
+        if db.session.query(user).filter_by(username=field.data).count() > 0:
+            raise ValidationError('Username is already registered to another user')
 
 # Method for login form functionality
 class LoginForm(FlaskForm):
