@@ -32,6 +32,15 @@
         </div>
         <hr>
         <div class="auth-container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="'alert-containter">
+                        {% for category, message in messages %}
+                        <div class="alert {{ category }}">{{ message}}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
             <div class="login">
                 <form method="POST" action="{{ url_for('login') }}">
                     <h2 class="auth-title">Log In</h2>

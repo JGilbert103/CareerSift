@@ -446,3 +446,20 @@ input[type=range] {
     width: 75%;
     height: 2px;
 }
+
+.alert-container {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.alert {
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 14px;
+    color: #fff;
+}
+
+.alert.error {
+    background-color: #e74c3c; /* Red for error */
+}

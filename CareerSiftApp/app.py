@@ -3,7 +3,7 @@ import os
 import sqlite3
 import csv
 import bcrypt
-from flask import Flask, redirect, url_for, render_template, request, session, jsonify
+from flask import Flask, redirect, url_for, render_template, request, session, jsonify, flash
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
 from database import db
@@ -239,11 +239,13 @@ def login():
             return redirect(url_for('index'))
         
         # Redirect user to login form
+        flash('Invalid username or password', 'error')
         return render_template("login.html", form=LoginForm)
 
     # If the form did not validate
     else:
         # Redirect user to login form
+        flash('Invalid username or password', 'error')
         return render_template("login.html", form=LoginForm)
 
     if form.errors:
