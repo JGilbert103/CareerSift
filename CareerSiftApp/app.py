@@ -184,11 +184,19 @@ def register():
         conn = sqlite3.connect('CareerSiftDB.db')
         cursor = conn.cursor()
 
-        cursor.execute("SELECT * FROM user WHERE username = ? OR email = ?", (username, email))
-        existingUser = cursor.fetchone()
+        cursor.execute("SELECT * FROM user WHERE username = ?", (username,))
+        existingUsername = cursor.fetchone()
 
-        if existingUser:
-            print("existing")
+        cursor.execute("SELECT * FROM user WHERE email = ?", (email,))
+        existingEmail = cursor.fetchone()
+
+        if existingUsername is not None:
+            flash('Account already exisits with given username', 'error')
+            conn.close()
+            return redirect(url_for('register'))
+        
+        if existingEmail is not None:
+            flash('Account already exisits with given email', 'error')
             conn.close()
             return redirect(url_for('register'))
 
@@ -206,11 +214,9 @@ def register():
 
         # Redirect user to home/index page
         return redirect(url_for('index'))
-
-    if form.errors:
-        print(f"Form errors: {form.errors}")
     
     # If there was an error with registering, redirect to register form
+    #flash('All fields must be full to register', 'error')
     return render_template('register.html', form=form)
 
 
@@ -245,11 +251,9 @@ def login():
     # If the form did not validate
     else:
         # Redirect user to login form
-        flash('Invalid username or password', 'error')
+        #flash('Invalid username or password', 'error')
         return render_template("login.html", form=LoginForm)
 
-    if form.errors:
-        print(f"Form errors: {form.errors}")
 
 
 
