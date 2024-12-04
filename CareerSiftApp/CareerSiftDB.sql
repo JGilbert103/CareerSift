@@ -37,10 +37,6 @@ CREATE TABLE savedListing (
     FOREIGN KEY (listid) REFERENCES listing(listid)
 );
 
--- Adding a saved listing for testing
-INSERT INTO savedListing (userid, listid)
-VALUES (0, 0);
-
 -- Tables for messages
 CREATE TABLE messages (
     messageid INTEGER PRIMARY KEY,

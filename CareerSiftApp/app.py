@@ -122,6 +122,25 @@ def getData(listid):
 
     return listingData
 
+# Method to handle populating listings saved by a user
+def getSaved(userid):
+    conn = sqlite3.connect('CareerSiftDB.db')
+    cursor = conn.cursor()
+
+    cursor.execute('''
+        SELECT l.listid, l.position, l.company, l.salary, l.description, l.type
+        FROM savedListing s
+        JOIN listing l ON s.listid = l.listid
+        WHERE s.userid = ?
+    ''', (userid,))
+
+    jobs = cursor.fetchall()
+
+    conn.close()
+
+    return jobs
+
+
 ###   Methods to handle register, login, and logout   ###
 
 ## Method for registering a user
@@ -189,7 +208,7 @@ def login():
             userid, username, password, email = user
 
             session['user'] = username
-            session['userid'] = userid
+            session['userid'] = user[0]
             # Redirect user to home/index page
             return redirect(url_for('index'))
         
@@ -249,32 +268,37 @@ def index():
 def saveListing():
     # Recieve the incoming json data from front end
     data = request.json
+    listid = str(data.get('listid'))
     # Saving the listid for the saved listing
-    listid = data.get('listid')
-    # Saving the userid for the saved listing
-    userid = session.get('userid')
+    #listid = data.get('listid')
+    #userid = session['userid']
+
     # Handling error if the user is not logged in
-    if not userid:
-        return jsonify({'error': 'User not logged in'}), 401
+    #if not listid or not userid:
+        #return jsonify({'error': 'Missing params'}), 401
 
     try:
-        # Check if the listing is already saved by this user
-        existingListing = savedListing.query.filter_by(userid=userid, listid=listid).first()
-        if existingListing:
+        userid = session['userid']
+        ##print(f"in POST method user = ", userid)
+        conn = sqlite3.connect('CareerSiftDB.db')
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT * FROM savedListing WHERE userid = ? AND listid = ?", (userid, listid))
+        alreadySaved = cursor.fetchone()
+
+        if alreadySaved:
             return jsonify({'error': 'This listing is already saved by the user'}), 400
 
-        # Create a new saved listing record
-        newListing = savedListing(userid=userid, listid=listid)
+        cursor.execute("INSERT INTO savedListing (userid, listid) VALUES (?, ?)", (userid, listid))
+        
+        conn.commit()
+        cursor.close()
 
-        # Add the new saved listing to the session and commit it to the database
-        db.session.add(newListing)
-        db.session.commit()
-
-        return jsonify({'message': 'Listing saved successfully'}), 200  # Success response
+        return jsonify({'message': 'Listing saved successfully'}), 200
 
     except Exception as e:
-        db.session.rollback()  # Rollback in case of error
-        return jsonify({'error': str(e)}), 500  # Handle other errors
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
 
 # Method for unsave listings page
 @app.route('/unsaveListing', methods=['POST'])
@@ -353,10 +377,13 @@ def compare():
 @app.route('/saved.html', methods=['GET'])
 def saved():
     # Checking which users saved listings to access
-    if session.get('user'):
-        return render_template("saved.html", user=session['user'])
-    else:
-        return render_template("saved.html")
+    userid = session.get('userid')
+    if not userid:
+        return redirect(url_for('login'))
+    
+    savedJobs = getSaved(userid)
+
+    return render_template('saved.html', jobs=savedJobs)
 
 # Method for settings page
 @app.route('/settings.html', methods=['GET'])
