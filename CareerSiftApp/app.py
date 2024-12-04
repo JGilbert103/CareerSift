@@ -287,13 +287,6 @@ def saveListing():
     temp = data.get('listid')
     print(type(data.get('listid')))
     listid = int(temp)
-    # Saving the listid for the saved listing
-    #listid = data.get('listid')
-    #userid = session['userid']
-
-    # Handling error if the user is not logged in
-    #if not listid or not userid:
-        #return jsonify({'error': 'Missing params'}), 401
 
     try:
         userid = session['userid']
@@ -359,7 +352,10 @@ def unsaveListing():
 @app.route('/about.html', methods=['GET'])
 def about():
     # Redirect user to about us page
-    return render_template("about.html")
+    if session.get('user'):
+        return render_template("about.html", user=session['user'])
+    else:
+        return render_template("about.html")
 
 # Method for contact page
 @app.route('/contact.html', methods=['POST','GET'])
@@ -382,11 +378,10 @@ def contact():
 
         return redirect(url_for('thanks'))
     
-    if form.errors:
-        print(f"Form errors: {form.errors}")
-        
-
-    return render_template('contact.html', form=ContactForm)
+    if session.get('user'):
+        return render_template("contact.html", user=session['user'], form=ContactForm)
+    else:
+        return render_template("contact.html")
 
 # Method for thanks page
 @app.route('/thanks.html', methods=['GET'])
@@ -409,7 +404,7 @@ def saved():
     
     savedJobs = getSaved(userid)
 
-    return render_template('saved.html', jobs=savedJobs)
+    return render_template("saved.html", user=session['user'], jobs=savedJobs)
 
 # Method for settings page
 @app.route('/settings.html', methods=['GET'])
