@@ -54,8 +54,8 @@
             <div class="search-cards">
                 <button><a href="compare.html">Compare</a></button>
                 <div class="cards">
-                    {% if savedJobs %}
-                    {% for job in savedJobs %}
+                    {% if jobs %}
+                    {% for job in jobs %}
                     <div class="card">
                         <input type="checkbox" id="choice" name="choice">
                         <a href="{{ url_for('listings', listid=job[0]) }}">

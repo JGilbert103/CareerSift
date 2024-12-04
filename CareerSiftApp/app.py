@@ -116,6 +116,7 @@ def getData(listid):
     
     # Fetching the listing
     listingData = cursor.fetchone()
+    print(listingData)
     
     # Closing the connection to the database
     conn.close()
@@ -126,19 +127,34 @@ def getData(listid):
 def getSaved(userid):
     conn = sqlite3.connect('CareerSiftDB.db')
     cursor = conn.cursor()
+    
+    # Querying the database for saved listids
+    cursor.execute("""
+    SELECT listid
+    FROM savedListing
+    WHERE userid = ?
+    """, (userid,))
+    savedIds = cursor.fetchall()
+    
+    # Flatten savedIds to get a list of listids (e.g., [1, 2, 3])
+    savedIds = [x[0] for x in savedIds]  # Extracting the listid values from the tuples
 
-    cursor.execute('''
-        SELECT l.listid, l.position, l.company, l.salary, l.description, l.type
-        FROM savedListing s
-        JOIN listing l ON s.listid = l.listid
-        WHERE s.userid = ?
-    ''', (userid,))
-
-    jobs = cursor.fetchall()
+    # Only proceed if there are saved listids
+    if savedIds:
+        # Querying the listing table using the list of listids
+        cursor.execute("""
+            SELECT listid, title, company, position, salary, type, sourcelink, description
+            FROM listing
+            WHERE listid IN ({})
+        """.format(','.join('?' for _ in savedIds)), savedIds)
+        
+        jobs = cursor.fetchall()
+        
+        return jobs
+    else:
+        return []
 
     conn.close()
-
-    return jobs
 
 
 ###   Methods to handle register, login, and logout   ###
@@ -268,7 +284,9 @@ def index():
 def saveListing():
     # Recieve the incoming json data from front end
     data = request.json
-    listid = str(data.get('listid'))
+    temp = data.get('listid')
+    print(type(data.get('listid')))
+    listid = int(temp)
     # Saving the listid for the saved listing
     #listid = data.get('listid')
     #userid = session['userid']
@@ -283,14 +301,21 @@ def saveListing():
         conn = sqlite3.connect('CareerSiftDB.db')
         cursor = conn.cursor()
 
+        print("before sql request")
+
         cursor.execute("SELECT * FROM savedListing WHERE userid = ? AND listid = ?", (userid, listid))
         alreadySaved = cursor.fetchone()
 
-        if alreadySaved:
-            return jsonify({'error': 'This listing is already saved by the user'}), 400
+        print(alreadySaved)
+
+        if alreadySaved is not None:
+            print("in isSaved conditional block")
+            return jsonify({'error': 'This listing is already saved by the user'}), 407
 
         cursor.execute("INSERT INTO savedListing (userid, listid) VALUES (?, ?)", (userid, listid))
         
+        print("executed insert")
+
         conn.commit()
         cursor.close()
 
@@ -377,7 +402,8 @@ def compare():
 @app.route('/saved.html', methods=['GET'])
 def saved():
     # Checking which users saved listings to access
-    userid = session.get('userid')
+    userid = session['userid']
+    print(userid)
     if not userid:
         return redirect(url_for('login'))
     
