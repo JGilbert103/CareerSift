@@ -63,3 +63,12 @@ class messages(db.Model):
         self.messagebody = messagebody
         self.timestamp = timestamp
         self.isread = isread
+
+class contactMessage(db.Model):
+    contactMessageId = db.Column('contactMessageId', db.Integer, primary_key=True, autoincrement=True)
+    email = db.Column('email', db.String(75))
+    issue = db.Column('issue', db.Text)
+
+    def __init__(self, email, issue):
+        self.email = email
+        self.issue = issue

@@ -7,7 +7,7 @@ from flask import Flask, redirect, url_for, render_template, request, session, j
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
 from database import db
-from models import user, listing, savedListing, messages
+from models import user, listing, savedListing, messages, contactMessage
 from forms import RegisterForm, LoginForm, ContactForm
 #import jobScraper
 
@@ -303,30 +303,37 @@ def about():
     # Redirect user to about us page
     return render_template("about.html")
 
-## ADD CONTACT PAGE FUNCTIONALITY
-@app.route('/contact.html', methods=['GET'])
+# Method for contact page
+@app.route('/contact.html', methods=['POST','GET'])
 def contact():
     form = ContactForm()
 
     if request.method == 'POST' and form.validate_on_submit():
-        '''
-        # Save the contact form message to the database (or process as needed)
-        contact_message = ContactMessage(
-            email=form.email.data,
-            issue=form.issue.data
-        )
+        email = request.form.get('email')
+        issue = request.form.get('issue')
+        #print(email, issue)
 
-        # Save the contact message to the database
-        db.session.add(contact_message)
-        db.session.commit()
+        conn = sqlite3.connect('CareerSiftDB.db')
+        cursor = conn.cursor()
 
-        # Flash a success message
-        flash('Your message has been sent!', 'success')
+        cursor.execute("INSERT INTO contactMessage (email, issue) VALUES (?, ?)",
+                            (email, issue))
+
+        conn.commit()
+        conn.close()
+
+        return redirect(url_for('thanks'))
+    
+    if form.errors:
+        print(f"Form errors: {form.errors}")
         
-        return redirect(url_for('contact'))  # Redirect to the contact page after submission
-        '''
 
     return render_template('contact.html', form=ContactForm)
+
+# Method for thanks page
+@app.route('/thanks.html', methods=['GET'])
+def thanks():
+    return render_template("thanks.html")
 
 ## ADD COMPARE PAGE FUNCTIONALITY
 @app.route('/compare.html', methods=['GET'])

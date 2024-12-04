@@ -60,3 +60,9 @@ CREATE TABLE messages (
     FOREIGN KEY (receiverid) REFERENCES user(userid),
     FOREIGN KEY (listid) REFERENCES listing(listid)
 );
+
+CREATE TABLE contactMessage (
+    contactMessageId INTEGER PRIMARY KEY AUTOINCREMENT,
+    email VARCHAR(75),
+    issue TEXT
+);

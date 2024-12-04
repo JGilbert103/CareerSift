@@ -45,9 +45,11 @@ class LoginForm(FlaskForm):
 
 # Method for contact us form functionality
 class ContactForm(FlaskForm):
+    class Meta:
+        csrf = False
     # Input for email
     email = StringField('Email', validators=[Email(message='Email is not valid'), DataRequired()])
     # Input for issue
-    issue = StringField('Issue', validators=[Length(min=1, max=512), DataRequired()])
+    issue = TextAreaField('Issue', validators=[DataRequired()])
     # Submit form
     submit = SubmitField('Submit')
