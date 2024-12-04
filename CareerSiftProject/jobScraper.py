@@ -141,7 +141,7 @@ def getIndeedListingInfo(allListingsLinkIndeed):
             # Remove all commas and replace them with semi colons (fix after display on website due to csv issues)
             jobDesc = jobDesc.replace(',', ';')
             # Remove any newlines and replace them with spaces
-            jobDesc = jobDesc.replace('\n', ' ')
+            jobDesc = jobDesc.replace('\n', '~~')
         except Exception as e:
             print("Could not find job description:", e)
             jobDesc = "NO JOB DESCRIPTION FOUND"
@@ -328,7 +328,7 @@ def getSnagajobListingInfo(allListingsLinkGlassdoor):
         try:
             # Job Description
             jobDescElement = driver.find_element(By.CSS_SELECTOR, 'jobs-description .job-description')
-            jobDesc = jobDescElement.text.strip().replace(',', ';').replace('\n', ' ')
+            jobDesc = jobDescElement.text.strip().replace(',', ';').replace('\n', '~~')
         except:
             print("Could not find job description")
             jobDesc = "NO JOB DESCRIPTION FOUND"
