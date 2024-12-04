@@ -17,8 +17,8 @@ class user(db.Model):
         self.isadmin = isadmin
 
 class listing(db.Model):
-    listid = db.Column('listid', db.Integer, primary_key=True)
-    title = db.column('title', db.String(50))
+    listid = db.Column('listid', db.Integer, primary_key=True, autoincrement=True)
+    title = db.Column('title', db.String(50))
     company = db.Column('company', db.String(50))
     position = db.Column('position', db.String(50))
     salary = db.Column('salary', db.String(25))
@@ -26,8 +26,7 @@ class listing(db.Model):
     sourceLink = db.Column('sourceLink', db.Text)
     description = db.Column('description', db.Text)
 
-    def __init__(self, listid, title, company, position, salary, type, sourceLink, description):
-        self.listid = listid
+    def __init__(self, title, company, position, salary, type, sourceLink, description):
         self.title = title
         self.company = company
         self.position = position

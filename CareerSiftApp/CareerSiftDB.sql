@@ -21,7 +21,7 @@ VALUES(0, 'owen', 'P@ssw0rd!', 'ohartzel@charlotte.edu', TRUE);
 
 -- Tables for listings
 CREATE TABLE listing (
-    listid INTEGER PRIMARY KEY,
+    listid INTEGER PRIMARY KEY AUTOINCREMENT,
     title VARCHAR(50),
     company VARCHAR(50),
     position VARCHAR(50),

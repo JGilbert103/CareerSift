@@ -6,20 +6,14 @@ import bcrypt
 from flask import Flask, redirect, url_for, render_template, request, session, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from database import db
-from models import user as user
-from models import listing as listing
-from models import savedListing as savedListing
-from models import messages as messages
+from models import user, listing, savedListing, messages
 from forms import RegisterForm, LoginForm, ContactForm
 #import jobScraper
 
 app = Flask(__name__)
-
-# App configs
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///CareerSiftDB.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SECRET_KEY'] = 'your-secret-key'  # Set your secret key here
-
+app.config['SECRET_KEY'] = '12345'
 db.init_app(app)
 
 with app.app_context():
@@ -29,31 +23,36 @@ with app.app_context():
 
 # Method to create a listing entity in the database ## NEEDS WORK ##
 def createListing():
-    # Path to CSV file
-    csvPath = os.path.join(os.path.dirname(__file__), 'listings.csv')
-    
     try:
         # Open the CSV file and read data
-        with open(csvPath, 'r') as csvFile:
+        with open('listings.csv', 'r') as csvFile:
             reader = csv.DictReader(csvFile)
-            
             # Iterate through each row in the CSV file
             for row in reader:
-                # Insert listing data into the listing table
-                newListing = listing(
-                    title=row.get('title', '').strip(),
-                    company=row.get('company', '').strip(),
-                    position=row.get('position', '').strip(),
-                    salary=row.get('salary', '').strip(),
-                    type=row.get('type', '').strip(),
-                    sourceLink=row.get('sourceLink', '').strip(),
-                    description=row.get('description', '').strip()
-                )
-                # Add listing to the database
-                db.session.add(newListing)
+                title = row["title"].strip()
+                print("title: ", title)
+                company = row["company"].strip()
+                #print("company:", company)
+                position = row["position"].strip()
+                #print("position: ", position)
+                salary = row["salary"].strip()
+                #print("salary:", salary)
+                jobtype = row["type"].strip()
+                #print("type: ", jobtype)
+                sourcelink = row["sourceLink"].strip()
+                #print("link: ", sourcelink)
+                description = row["description"].strip()
+                #print("desc: ", description)
 
-            # Commit changes to the database
-            db.session.commit()
+                #print(f"Adding Listing: {title}, {company}, {position}, {salary}, {jobtype}, {sourcelink}, {description}")
+                conn = sqlite3.connect('CareerSiftDB.db')
+                cursor = conn.cursor()
+
+                cursor.execute("INSERT INTO listing (title, company, position, salary, type, sourcelink, description) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                                (title, company, position, salary, jobtype, sourcelink, description))
+                
+                conn.commit()
+            conn.close()      
 
     except FileNotFoundError:
         print("CSV file not found. Please ensure 'listings.csv' exists in the application directory.", "error")
@@ -137,7 +136,7 @@ def register():
         email = request.form['email']
        
         # Create a new user object
-        conn = sqlite3.connect('path_to_your_database.db')  # Replace with your database path
+        conn = sqlite3.connect('CareerSiftDB.db')
         cursor = conn.cursor()
 
         cursor.execute("SELECT * FROM user WHERE username = ? OR email = ?", (username, email))
@@ -149,7 +148,7 @@ def register():
             return redirect(url_for('register'))
         
         cursor.execute("INSERT INTO user (username, password, email, isadmin) VALUES (?, ?, ?, ?)",
-                       (username, shpass, email, False))  # Assuming default isadmin value is False
+                       (username, shpass, email, False))
         conn.commit()
 
         cursor.execute("SELECT userid FROM user WHERE username = ?", (username,))
@@ -213,6 +212,7 @@ def logout():
 # Method for home/index page
 @app.route('/')
 def index():
+    createListing()
     # Calling populateListings function
     jobListings = populateListings()
     # Session verification and populating listings
@@ -347,10 +347,6 @@ def listing(listid):
 
 ## Main Method
 if __name__ == '__main__':
-    #from app import app
-    #with app.app_context():
-        # Run the createListing function
-        #createListing()
 
     # Start the Flask application
     app.run(debug=True)
