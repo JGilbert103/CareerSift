@@ -107,6 +107,8 @@ def populateListings():
     # Returning jobs
     return jobs
 
+
+
 # Method to handle populating a specific listing when clicked
 def getData(listid):
     conn = sqlite3.connect('CareerSiftDB.db')
@@ -126,6 +128,8 @@ def getData(listid):
     conn.close()
 
     return listingData
+
+
 
 # Method to handle populating listings saved by a user
 def getSaved(userid):
@@ -209,6 +213,8 @@ def register():
     # If there was an error with registering, redirect to register form
     return render_template('register.html', form=form)
 
+
+
 ## Method for logging in a user
 @app.route('/login.html', methods=['POST', 'GET'])
 def login():
@@ -242,6 +248,8 @@ def login():
 
     if form.errors:
         print(f"Form errors: {form.errors}")
+
+
 
 ## Logging out a user
 @app.route('/logout')
@@ -283,6 +291,8 @@ def index():
     else:
             return render_template("index.html", jobs=jobListings)
 
+
+
 # Method for save listings page
 @app.route('/saveListing', methods=['POST'])
 def saveListing():
@@ -322,6 +332,8 @@ def saveListing():
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
+
+
 # Method for unsave listings page
 @app.route('/unsaveListing', methods=['POST'])
 def unsaveListing():
@@ -329,9 +341,11 @@ def unsaveListing():
     temp = data.get('listid')
     print(type(data.get('listid')))
     listid = int(temp)
+    print(listid)
 
     try:
         userid = session['userid']
+        print(userid)
         ##print(f"in POST method user = ", userid)
         conn = sqlite3.connect('CareerSiftDB.db')
         cursor = conn.cursor()
@@ -341,13 +355,16 @@ def unsaveListing():
         cursor.execute("SELECT * FROM savedListing WHERE userid = ? AND listid = ?", (userid, listid))
         deleteListing = cursor.fetchone()
 
-        #print(notSaved)
+        print("after sql request")
 
-        if deleteListing is not None:
+        print(deleteListing)
+
+        if deleteListing is None:
             print("in deleteListing conditional block")
             return jsonify({'error': 'This listing is not saved by the user'}), 407
 
-        cursor.execute("DELETE FROM savedListing (userid, listid) VALUES (?, ?)", (userid, listid))
+        print("before delete")
+        cursor.execute("DELETE FROM savedListing where userid = ? AND listid = ?", (userid, listid))
         
         print("executed delete")
 
@@ -360,6 +377,8 @@ def unsaveListing():
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
+
+
 # Method for about us page
 @app.route('/about.html', methods=['GET'])
 def about():
@@ -368,6 +387,8 @@ def about():
         return render_template("about.html", user=session['user'])
     else:
         return render_template("about.html")
+
+
 
 # Method for contact page
 @app.route('/contact.html', methods=['POST','GET'])
@@ -395,15 +416,27 @@ def contact():
     else:
         return render_template("contact.html")
 
+
+
 # Method for thanks page
 @app.route('/thanks.html', methods=['GET'])
 def thanks():
-    return render_template("thanks.html")
+    if session.get('user'):
+        return render_template("thanks.html", user=session['user'])
+    else:
+        return render_template("thanks.html")
+
+
 
 ## ADD COMPARE PAGE FUNCTIONALITY
 @app.route('/compare.html', methods=['GET'])
 def compare():
-    return render_template("compare.html")
+    if session.get('user'):
+        return render_template("compare.html", user=session['user'])
+    else:
+        return render_template("compare.html")
+
+
 
 ## ADD SAVED FUNCTIONALITY
 @app.route('/saved.html', methods=['GET'])
@@ -418,6 +451,8 @@ def saved():
 
     return render_template("saved.html", user=session['user'], jobs=savedJobs)
 
+
+
 # Method for settings page
 @app.route('/settings.html', methods=['GET'])
 def settings():
@@ -427,7 +462,9 @@ def settings():
         return render_template("settings.html", user=session['user'])    
     else:
         # Redirect user to settings page
-        return render_template("settings.html")    
+        return render_template("settings.html")   
+
+
 
 # Method for listing page
 @app.route('/listings/<int:listid>', methods=['GET'])
