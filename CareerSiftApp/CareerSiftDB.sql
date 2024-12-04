@@ -8,16 +8,12 @@
 
 -- Tables for user
 CREATE TABLE IF NOT EXISTS user (
-    userid INTEGER PRIMARY KEY,
+    userid INTEGER PRIMARY KEY AUTOINCREMENT,
     username VARCHAR(25),
-    password VARCHAR(25),
+    password TEXT,
     email VARCHAR(75),
     isadmin BOOLEAN DEFAULT FALSE
 );
-
--- Adding a user for testing
-INSERT INTO user (userid, username, password, email, isadmin)
-VALUES(0, 'owen', 'P@ssw0rd!', 'ohartzel@charlotte.edu', TRUE);
 
 -- Tables for listings
 CREATE TABLE listing (

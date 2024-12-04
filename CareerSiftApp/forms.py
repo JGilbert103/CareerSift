@@ -30,21 +30,24 @@ class RegisterForm(FlaskForm):
 
 # Method for login form functionality
 class LoginForm(FlaskForm):
-        username = StringField('Username', validators=[DataRequired()])
-        password = PasswordField('Password', validators=[DataRequired()])
-        submit = SubmitField('Login')
+    class Meta:
+        csrf = False
 
-       # Validating username exists in the database
-        def validate_username(self, field):
-            existingUser = user.query.filter_by(username=field.data).first()
-            if not user:
-                raise ValidationError('Username does not exist')
+    username = StringField('Username', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    submit = SubmitField('Login')
+
+    # Validating username exists in the database
+    def validate_username(self, field):
+        existingUser = user.query.filter_by(username=field.data).first()
+        if not user:
+            raise ValidationError('Username does not exist')
 
     # Validating password is correct
-        def validate_password(self, field):
-            existingUser = user.query.filter_by(username=self.username.data).first()
-            if existingUser and not bcrypt.checkpw(field.data.encode('utf-8'), user.password.encode('utf-8')):
-                raise ValidationError('Incorrect password')
+    def validate_password(self, field):
+        existingUser = user.query.filter_by(username=self.username.data).first()
+        if existingUser and not bcrypt.checkpw(field.data.encode('utf-8'), user.password.encode('utf-8')):
+            raise ValidationError('Incorrect password')
 
 # Method for contact us form functionality
 class ContactForm(FlaskForm):

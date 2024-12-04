@@ -4,10 +4,10 @@ from sqlalchemy.orm import relationship
 from database import db
 
 class user(db.Model):
-    userid = db.Column('userid', db.Integer, primary_key=True)
+    userid = db.Column('userid', db.Integer, primary_key=True, autoincrement=True)
     username = db.Column('username', db.String(25))
     password = db.Column('password', db.String(25))
-    email = db.Column('email', db.String(75))
+    email = db.Column('email', db.Text)
     isadmin = db.Column('isadmin', db.Boolean, default=False)
 
     def __init__(self, username, password, email, isadmin):

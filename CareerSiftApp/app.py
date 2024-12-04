@@ -131,11 +131,12 @@ def register():
 
     if request.method == 'POST' and form.validate_on_submit():
         # Salting and hashing user input for password
-        shpass = bcrypt.hashpw(request.form['password'].encode('utf-8'), bcrypt.gensalt())
+        #shpass = bcrypt.hashpw(request.form['Password'].encode('utf-8'), bcrypt.gensalt())
         # Gathering user data entered to the application
-        username = request.form['username']
-        email = request.form['email']
-       
+        username = form.username.data
+        email = form.email.data
+        password = form.password.data
+
         # Create a new user object
         conn = sqlite3.connect('CareerSiftDB.db')
         cursor = conn.cursor()
@@ -144,11 +145,12 @@ def register():
         existingUser = cursor.fetchone()
 
         if existingUser:
+            print("existing")
             conn.close()
             return redirect(url_for('register'))
-        
+
         cursor.execute("INSERT INTO user (username, password, email, isadmin) VALUES (?, ?, ?, ?)",
-                       (username, shpass, email, False))
+                       (username, password, email, False))
         conn.commit()
 
         cursor.execute("SELECT userid FROM user WHERE username = ?", (username,))
@@ -175,17 +177,22 @@ def login():
     # Validating login form on submission
     if form.validate_on_submit():
         # If form is valid, searching the databse for the matching user
-        user = db.session.query(user).filter_by(username=form.username.data).first()
+        conn = sqlite3.connect('CareerSiftDB.db')
+        cursor = conn.cursor()
+        
+        cursor.execute("SELECT userid, username, password, email FROM user WHERE username = ?", (form.username.data,))
+        user = cursor.fetchone()
+
         # Checking user password
-        if user and bcrypt.checkpw(form.password.data.encode('utf-8'), user.password.encode('utf-8')):
+        if user and form.password.data == user[2]:
             # If the password is correct, adding the user to the session
-            session['user'] = user.username
-            session['userid'] = user.userid
+            userid, username, password, email = user
+
+            session['user'] = username
+            session['userid'] = userid
             # Redirect user to home/index page
             return redirect(url_for('index'))
         
-        # If the password was incorrect, send error message
-        form.password.errors.append = ["Incorrect username or password"]
         # Redirect user to login form
         return render_template("login.html", form=LoginForm)
 
@@ -193,6 +200,9 @@ def login():
     else:
         # Redirect user to login form
         return render_template("login.html", form=LoginForm)
+
+    if form.errors:
+        print(f"Form errors: {form.errors}")
 
 ## Logging out a user
 @app.route('/logout')
