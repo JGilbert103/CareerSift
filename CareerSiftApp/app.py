@@ -43,6 +43,10 @@ def createListing():
                 sourcelink = row["sourceLink"].strip()
                 #print("link: ", sourcelink)
                 description = row["description"].strip()
+
+                #description = description.replace(';', ',')
+                #description = description.replace('~~', '\n')
+
                 #print("desc: ", description)
 
                 #print(f"Adding Listing: {title}, {company}, {position}, {salary}, {jobtype}, {sourcelink}, {description}")
