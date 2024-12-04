@@ -326,31 +326,39 @@ def saveListing():
 @app.route('/unsaveListing', methods=['POST'])
 def unsaveListing():
     data = request.json
-    listid = data.get('listid')
-    userid = session.get('userid')
-
-    if not userid:
-        return jsonify({'error': 'User not logged in'}), 401
+    temp = data.get('listid')
+    print(type(data.get('listid')))
+    listid = int(temp)
 
     try:
-        # Find the saved listing entry to delete
-        exsistingSavedListing = savedListing.query.filter_by(userid=userid, listid=listid).first()
+        userid = session['userid']
+        ##print(f"in POST method user = ", userid)
+        conn = sqlite3.connect('CareerSiftDB.db')
+        cursor = conn.cursor()
 
-        # If the saved listing doesn't exist, return an error
-        if not exsistingSavedListing:
-            return jsonify({'error': 'This listing is not saved by the user'}), 400
+        print("before sql request")
 
-        # Delete the saved listing
-        db.session.delete(exsistingSavedListing)
+        cursor.execute("SELECT * FROM savedListing WHERE userid = ? AND listid = ?", (userid, listid))
+        deleteListing = cursor.fetchone()
 
-        # Commit the transaction
-        db.session.commit()
+        #print(notSaved)
 
-        return jsonify({'message': 'Listing unsaved successfully'}), 200  # Success response
+        if deleteListing is not None:
+            print("in deleteListing conditional block")
+            return jsonify({'error': 'This listing is not saved by the user'}), 407
+
+        cursor.execute("DELETE FROM savedListing (userid, listid) VALUES (?, ?)", (userid, listid))
+        
+        print("executed delete")
+
+        conn.commit()
+        cursor.close()
+
+        return jsonify({'message': 'Listing removed successfully'}), 200
 
     except Exception as e:
-        db.session.rollback()  # Rollback in case of error
-        return jsonify({'error': str(e)}), 500  # Handle other errors
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
 
 # Method for about us page
 @app.route('/about.html', methods=['GET'])
