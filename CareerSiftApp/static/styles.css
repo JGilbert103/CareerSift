@@ -263,6 +263,25 @@ h3, h5 {
 .search-cards {
     width: 75%;
     margin: 0 auto;
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.compareBtn {
+    width: 20%;
+    position: fixed;
+    right: 10%;
+    cursor: not-allowed;
+    border: 1px solid black;
+    text-align: center;
+    border-radius: 8px;
+    padding: 2px;
+    background-color: #07B900;
+    color: black !important;
+}
+
+.compareBtn.no {
+    opacity: 0.5;
 }
 
 .search {
@@ -318,6 +337,29 @@ a hr {
     border: 1px solid black;
     border-radius: 8px;
     margin-top: 40px;
+}
+
+.saved-cards {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 5%;
+    padding-left: 3%;
+}
+
+.saved-cards .card {
+    background-color: white;
+    text-align: center; /* Align content to the left */
+    width: 40%;
+    border: 1px solid black;
+    border-radius: 8px;
+    margin-top: 40px;
+    padding: 10px; /* Add padding for better spacing */
+}
+
+.saved-cards .card a {
+    display: block; /* Ensure the anchor takes full width for alignment */
+    text-decoration: none; /* Optional: Remove underline for cleaner look */
 }
 
 .star, #choice {
@@ -380,4 +422,26 @@ input[type=range] {
     margin: 0; 
     line-height: 1.5; 
     font-size: 14px; 
+}
+
+.settings {
+    text-align: center;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 8px;
+    width: 65%;
+    margin: 20px auto;
+}
+
+.settings-section {
+    margin: 20px;
+}
+
+.settings-section input {
+    margin-bottom: 20px;
+}
+
+.settings hr {
+    width: 75%;
+    height: 2px;
 }

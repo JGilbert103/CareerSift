@@ -31,7 +31,59 @@
             </nav>
             <hr>
         </div>
-        <h1>SETTINGS</h1>
+        <div class="settings">
+            <h1>Settings</h1>
+        
+            <!-- Personal Information Section -->
+            <section class="settings-section">
+                <h2>Personal Information</h2>
+                <form id="personal-info-form">
+                    <label for="user">Username:</label>
+                    <input type="text" id="user" name="user" placeholder="Your Username">
+                    <br>
+                    <label for="profile-pic">Profile Picture:</label>
+                    <input type="file" id="profile-pic" name="profile-pic">
+                    <br>
+                    <button type="submit">Save Changes</button>
+                </form>
+            </section>
+            <hr>
+            <!-- Notifications Section -->
+            <section class="settings-section">
+                <h2>Notifications</h2>
+                <form id="notifications-form">
+                    <label>
+                        <input type="checkbox" name="email-notifications">
+                        Email Notifications
+                    </label><br>
+                    <button type="submit">Save Preferences</button>
+                </form>
+            </section>
+            <hr>
+            <!-- Change Password Section -->
+            <section class="settings-section">
+                <h2>Change Password</h2>
+                <form id="change-password-form">
+                    <label for="current-password">Current Password:</label>
+                    <input type="password" id="current-password" name="current-password" placeholder="Current Password">
+                    <br>
+                    <label for="new-password">New Password:</label>
+                    <input type="password" id="new-password" name="new-password" placeholder="New Password">
+                    <br>
+                    <label for="confirm-password">Confirm New Password:</label>
+                    <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm Password">
+                    <br>
+                    <button type="submit">Change Password</button>
+                </form>
+            </section>
+            <hr>
+            <!-- Account Management Section -->
+            <section class="settings-section">
+                <h2>Account Management</h2>
+                <button id="logout-btn">Log Out</button>
+                <button id="delete-account-btn" class="danger">Delete Account</button>
+            </section>
+        </div>
     </body>
 </html>
 
