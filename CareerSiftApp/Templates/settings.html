@@ -5,12 +5,12 @@
             <!-- Personal Information Section -->
             <section class="settings-section">
                 <h2>Personal Information</h2>
-                <form id="personal-info-form">
+                <form id="PersonalInfoForm" method="POST", action="/settings.html">
                     <label for="user">Username:</label>
-                    <input type="text" id="user" name="user" placeholder="Your Username">
+                    <input type="text" id="username" name="username" placeholder="Your Username">
                     <br>
                     <label for="profile-pic">Profile Picture:</label>
-                    <input type="file" id="profile-pic" name="profile-pic">
+                    <input type="file" id="profilePic" name="profilePic">
                     <br>
                     <button type="submit">Save Changes</button>
                 </form>
@@ -33,13 +33,13 @@
                 <h2>Change Password</h2>
                 <form id="change-password-form">
                     <label for="current-password">Current Password:</label>
-                    <input type="password" id="current-password" name="current-password" placeholder="Current Password">
+                    <input type="password" id="currentPassword" name="currentPassword" placeholder="Current Password">
                     <br>
                     <label for="new-password">New Password:</label>
-                    <input type="password" id="new-password" name="new-password" placeholder="New Password">
+                    <input type="password" id="newPassword" name="newPassword" placeholder="New Password">
                     <br>
                     <label for="confirm-password">Confirm New Password:</label>
-                    <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm Password">
+                    <input type="password" id="confirmPssword" name="confirmPassword" placeholder="Confirm Password">
                     <br>
                     <button type="submit">Change Password</button>
                 </form>

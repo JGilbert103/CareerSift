@@ -8,7 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
 from database import db
 from models import user, listing, savedListing, messages, contactMessage
-from forms import RegisterForm, LoginForm, ContactForm
+from forms import RegisterForm, LoginForm, ContactForm, PersonalInfoForm
 #import jobScraper
 
 app = Flask(__name__)
@@ -522,15 +522,61 @@ def savedlisting(listid):
 
 
 # Method for settings page
-@app.route('/settings.html', methods=['GET'])
+@app.route('/settings.html', methods=['POST','GET'])
 def settings():
     # Checking which users settings to access
     if session.get('user'):
+
+        userid = session['userid']
+        personalInfoForm = PersonalInfoForm()
+        #notificationsForm = NotificationsForm()
+        #changePasswordForm = ChangePasswordForm()
+        #logoutDeleteForm = LogoutDeleteForm()
+
+        if personalInfoForm.validate_on_submit():
+            username = personalInfoForm.username.data
+            profilePic = personalInfoForm.profilePic.data
+
+            if username is None and profile_pic is None:
+                flash("Please provide a new username or upload a profile picture.", "danger")
+                return redirect(url_for('settings'))
+
+            try:
+                if username:
+                    updatePersonalInfo(userid, username=username)
+                    flash("Personal Information updated successfully!", "success")
+
+            except Exception as e:
+                flash(f"An error occurred: {e}", "danger")
+            return redirect(url_for('settings'))
+
+        #if notificationsForm.validate_on_submit():
+
+        '''if changePasswordForm.validate_on_submit():
+            currentPassword = changePasswordForm.currentPassword.data
+            newPassword = changePasswordForm.newPassword.data'''    
+
         # Redirect user to their settings page
-        return render_template("settings.html", user=session['user'])    
+        return render_template("settings.html", user=session['user'], personalInfoForm=personalInfoForm)    
     else:
         # Redirect user to settings page
-        return render_template("settings.html")   
+        return render_template("login.html")   
+
+
+
+def updatePersonalInfo(userid, username):
+
+    conn = sqlite3.connect('CareerSiftDB.db')
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("UPDATE user SET username = ? WHERE userid = ?", (username, userid,))
+        conn.commit()
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error creating listings: {e}", "error")
+    finally:
+        conn.close()
 
 
 

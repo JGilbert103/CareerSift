@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, TextAreaField
+from wtforms import StringField, PasswordField, SubmitField, TextAreaField, FileField
 from wtforms.validators import Length, Regexp, DataRequired, EqualTo, Email
 from wtforms import ValidationError, BooleanField
 from models import user
@@ -59,3 +59,12 @@ class ContactForm(FlaskForm):
     issue = TextAreaField('Issue', validators=[DataRequired()])
     # Submit form
     submit = SubmitField('Submit')
+
+class PersonalInfoForm(FlaskForm):
+    class Meta:
+        csrf = False
+
+    username = StringField('username', validators=[DataRequired()])
+    profilePic = FileField('Profile Picture')
+
+    submit = SubmitField('Save Changes')
