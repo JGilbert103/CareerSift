@@ -55,55 +55,55 @@
                         });
 
                         const slider = document.getElementById("sal");
-                const amtDisplay = document.getElementById("amt");
-                amtDisplay.textContent = "$0";
-                slider.addEventListener("input", () => {
-                    if (slider.value == 0) {
-                        amtDisplay.textContent = "$0";  
-                    } else {
-                        amtDisplay.textContent = `$0 - $${slider.value}`;
-                    }
-                });
-
-                const stars = document.querySelectorAll(".star");
-                stars.forEach((star) => {
-                    star.addEventListener("click", () => {
-                        const listid = star.dataset.listid;
-                        const isSaved = star.src.includes("star-icon-filled.png");
-                        
-                        if (star.src.includes("star-icon.png")) {
-                            star.src = "/static/star-icon-filled.png";
-                        } else {
-                            star.src = "/static/star-icon.png";
-                        }
-
-                        star.src = isSaved ? "/static/star-icon.png" : "/static/star-icon-filled.png";
-
-                        fetch(isSaved ? '/unsaveListing' : '/saveListing', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({ listid: listid }),
-                        })
-                        .then((response) => {
-                            if (!response.ok) {
-                                throw new Error('Failed to save or unsave listing.');
+                        const amtDisplay = document.getElementById("amt");
+                        amtDisplay.textContent = "$0";
+                        slider.addEventListener("input", () => {
+                            if (slider.value == 0) {
+                                amtDisplay.textContent = "$0";  
+                            } else {
+                                amtDisplay.textContent = `$0 - $${slider.value}`;
                             }
-                        })
-                        .catch((error) => {
-                            console.error(error);
-                            star.src = isSaved 
-                                ? "/static/star-icon-filled.png" 
-                                : "/static/star-icon.png";
-                            alert('An error occurred while saving or unsaving the listing.');
                         });
-                    });
-                });
+
+                        const stars = document.querySelectorAll(".star");
+                        stars.forEach((star) => {
+                            star.addEventListener("click", () => {
+                                const listid = star.dataset.listid;
+                                const isSaved = star.src.includes("star-icon-filled.png");
+                                
+                                if (star.src.includes("star-icon.png")) {
+                                    star.src = "/static/star-icon-filled.png";
+                                } else {
+                                    star.src = "/static/star-icon.png";
+                                }
+
+                                star.src = isSaved ? "/static/star-icon.png" : "/static/star-icon-filled.png";
+
+                                fetch(isSaved ? '/unsaveListing' : '/saveListing', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({ listid: listid }),
+                                })
+                                .then((response) => {
+                                    if (!response.ok) {
+                                        throw new Error('Failed to save or unsave listing.');
+                                    }
+                                })
+                                .catch((error) => {
+                                    console.error(error);
+                                    star.src = isSaved 
+                                        ? "/static/star-icon-filled.png" 
+                                        : "/static/star-icon.png";
+                                    alert('An error occurred while saving or unsaving the listing.');
+                                });
+                            });
+                        });
                     });
                 </script>
                 {% endautoescape %}
-                <div class="saved-cards">
+                <div class="cards">
                     {% if jobs %}
                     {% for job in jobs %}
                     <div class="card">
