@@ -538,13 +538,13 @@ def settings():
             profilePic = personalInfoForm.profilePic.data
 
             if username is None and profilePic is None:
-                flash("Please provide a new username or upload a profile picture.", "danger")
+                flash("Please provide a new username or upload a profile picture.", "personal-info-error")
                 return redirect(url_for('settings'))
 
             try:
                 if username:
                     updatePersonalInfo(userid, username=username)
-                    flash("Personal Information updated successfully!", "success")
+                    flash("Personal Information updated successfully!", "personal-info-success")
 
             #if profilePic:
 
@@ -553,7 +553,8 @@ def settings():
 
             except Exception as e:
                 flash(f"An error occurred: {e}", "danger")
-
+            
+            #flash("Please provide a new username or upload a profile picture.", "personal-info-error")
             return render_template("settings.html", user=session['user'], personalInfoForm=personalInfoForm, changePasswordForm=changePasswordForm) 
 
         #if notificationsForm.validate_on_submit():
@@ -562,26 +563,30 @@ def settings():
             currentPassword = changePasswordForm.currentPassword.data
             newPassword = changePasswordForm.newPassword.data
 
+            print(currentPassword)
+            print(newPassword)
+
             try:
                 storedPassword = getPassword(userid)
                 print(storedPassword)
 
                 if storedPassword != currentPassword:
-                    print("not equal")
+                    flash('Invalid current password', 'error')
                     return render_template("settings.html", user=session['user'], personalInfoForm=personalInfoForm, changePasswordForm=changePasswordForm) 
 
                 updatePassword(userid, newPassword)
 
             except Exception as e:
-                flash(f"An error occurred: {e}", "danger")
+                #flash(f"An error occurred: {e}", "danger")
                 return render_template("settings.html", user=session['user'], personalInfoForm=personalInfoForm, changePasswordForm=changePasswordForm) 
 
 
         # Redirect user to their settings page
+        #flash('Invalid current password', 'error')
         return render_template("settings.html", user=session['user'], personalInfoForm=personalInfoForm, changePasswordForm=changePasswordForm)    
     else:
         # Redirect user to settings page
-        return render_template("login.html")   
+        return redirect(url_for('login'))   
 
 
 

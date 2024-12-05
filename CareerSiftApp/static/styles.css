@@ -480,7 +480,19 @@ input[type=range] {
 }
 
 .alert.error {
-    background-color: #e74c3c; /* Red for error */
+    background-color: #e74c3c;
+}
+
+.alert.success {
+    background-color: #009502;
+}
+
+.personal-info-error {
+    background-color: #e74c3c;
+}
+
+.personal-info-success{
+    background-color: #009502;
 }
 
 .job-search-bar {
