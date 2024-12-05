@@ -8,7 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
 from database import db
 from models import user, listing, savedListing, messages, contactMessage
-from forms import RegisterForm, LoginForm, ContactForm, PersonalInfoForm
+from forms import RegisterForm, LoginForm, ContactForm, PersonalInfoForm, ChangePasswordForm
 #import jobScraper
 
 app = Flask(__name__)
@@ -530,14 +530,14 @@ def settings():
         userid = session['userid']
         personalInfoForm = PersonalInfoForm()
         #notificationsForm = NotificationsForm()
-        #changePasswordForm = ChangePasswordForm()
+        changePasswordForm = ChangePasswordForm()
         #logoutDeleteForm = LogoutDeleteForm()
 
         if personalInfoForm.validate_on_submit():
             username = personalInfoForm.username.data
             profilePic = personalInfoForm.profilePic.data
 
-            if username is None and profile_pic is None:
+            if username is None and profilePic is None:
                 flash("Please provide a new username or upload a profile picture.", "danger")
                 return redirect(url_for('settings'))
 
@@ -546,22 +546,77 @@ def settings():
                     updatePersonalInfo(userid, username=username)
                     flash("Personal Information updated successfully!", "success")
 
+            #if profilePic:
+
+                #try:
+                    #print("Working")
+
             except Exception as e:
                 flash(f"An error occurred: {e}", "danger")
-            return redirect(url_for('settings'))
+
+            return render_template("settings.html", user=session['user'], personalInfoForm=personalInfoForm, changePasswordForm=changePasswordForm) 
 
         #if notificationsForm.validate_on_submit():
 
-        '''if changePasswordForm.validate_on_submit():
+        if changePasswordForm.validate_on_submit():
             currentPassword = changePasswordForm.currentPassword.data
-            newPassword = changePasswordForm.newPassword.data'''    
+            newPassword = changePasswordForm.newPassword.data
+
+            try:
+                storedPassword = getPassword(userid)
+                print(storedPassword)
+
+                if storedPassword != currentPassword:
+                    print("not equal")
+                    return render_template("settings.html", user=session['user'], personalInfoForm=personalInfoForm, changePasswordForm=changePasswordForm) 
+
+                updatePassword(userid, newPassword)
+
+            except Exception as e:
+                flash(f"An error occurred: {e}", "danger")
+                return render_template("settings.html", user=session['user'], personalInfoForm=personalInfoForm, changePasswordForm=changePasswordForm) 
+
 
         # Redirect user to their settings page
-        return render_template("settings.html", user=session['user'], personalInfoForm=personalInfoForm)    
+        return render_template("settings.html", user=session['user'], personalInfoForm=personalInfoForm, changePasswordForm=changePasswordForm)    
     else:
         # Redirect user to settings page
         return render_template("login.html")   
 
+
+
+def getPassword(userid):
+    conn = sqlite3.connect('CareerSiftDB.db')
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("SELECT password FROM user WHERE userid = ?", (userid,))
+        temp = cursor.fetchone()
+        storedPassword = temp[0]
+        return storedPassword
+
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error creating listings: {e}", "error")
+    finally:
+        conn.close()
+
+
+
+def updatePassword(userid, newPassword):
+    conn = sqlite3.connect('CareerSiftDB.db')
+    cursor = conn.cursor()
+
+    try:
+        conn.execute("UPDATE user SET password = ? WHERE userid = ?", (newPassword, userid,))
+        conn.commit()
+
+    except Exception as e:
+        flash(f"An error occurred: {e}", "danger")
+        return render_template("settings.html", user=session['user'], personalInfoForm=personalInfoForm, changePasswordForm=changePasswordForm)
+    
+    finally:
+        conn.close()
 
 
 def updatePersonalInfo(userid, username):
@@ -572,9 +627,11 @@ def updatePersonalInfo(userid, username):
     try:
         cursor.execute("UPDATE user SET username = ? WHERE userid = ?", (username, userid,))
         conn.commit()
+    
     except Exception as e:
         db.session.rollback()
         print(f"Error creating listings: {e}", "error")
+    
     finally:
         conn.close()
 

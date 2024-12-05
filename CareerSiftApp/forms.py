@@ -68,3 +68,13 @@ class PersonalInfoForm(FlaskForm):
     profilePic = FileField('Profile Picture')
 
     submit = SubmitField('Save Changes')
+
+class ChangePasswordForm(FlaskForm):
+    class Meta:
+        csrf = False
+
+    currentPassword = PasswordField('currentPassword', validators=[DataRequired()])
+    newPassword = PasswordField('newPassword', validators=[DataRequired(), EqualTo('confirmPassword', message="Passwords must match")])
+    confirmPassword = PasswordField('confirmPassword', validators=[DataRequired()])
+
+    submit = SubmitField('Change Password')
