@@ -103,7 +103,9 @@
                 <hr>
             </div>
             <div class="search-cards">
-                <input type="search" placeholder="Search" class="search">
+                <form action="/" method="GET">
+                    <input type="search" name="search" placeholder="Search for jobs..." value="{{ request.args.get('search', '') }}" class="search">
+                </form>
                 <div class="cards">
                     {% for job in jobs %}
                     <div class="card">

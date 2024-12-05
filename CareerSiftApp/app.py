@@ -94,17 +94,35 @@ def removeListing(listid):
 '''
 
 # Method to populate job listings to home/index page
-def populateListings():
+def populateListings(searchTerm=''):
     # Connecting to the database
     conn = sqlite3.connect('CareerSiftDB.db')
     cursor = conn.cursor()
-    # Querying the database for listings
-    cursor.execute("SELECT listid, title, company, position, salary, type, sourcelink, description FROM listing ")
-    # Saving listings found to jobs variable
+    
+    if searchTerm:
+        query = """
+            SELECT listid, title, company, position, salary, type, sourcelink, description
+            FROM listing
+            WHERE title LIKE ? OR company LIKE ? OR description LIKE ?
+        """
+        like_pattern = f"%{searchTerm}%"  # Prepare the pattern for partial matching
+        cursor.execute(query, (like_pattern, like_pattern, like_pattern))
+    
+    else:
+        # Retrieve all listings if no search term is provided
+        query = """
+            SELECT listid, title, company, position, salary, type, sourcelink, description
+            FROM listing
+        """
+        cursor.execute(query)
+
+    # Fetching the results
     jobs = cursor.fetchall()
-    # Closing connection to the database
+
+    # Closing the database connection
     conn.close()
-    # Returning jobs
+
+    # Returning the retrieved jobs
     return jobs
 
 
@@ -273,6 +291,7 @@ def logout():
 # Method for home/index page
 @app.route('/')
 def index():
+    searchTerm = request.args.get('search', '').strip()
     # Checking if listings exist in the database before calling createListing function
     con = sqlite3.connect('CareerSiftDB.db')
     cursor = con.cursor()
@@ -286,7 +305,7 @@ def index():
         createListing()
 
     # Calling populateListings function
-    jobListings = populateListings()
+    jobListings = populateListings(searchTerm)
 
     # Session verification and populating listings
     if session.get('user'):
@@ -298,11 +317,10 @@ def index():
         userSavedListings = cursor.fetchall()
         userSavedListings = [x[0] for x in userSavedListings]
 
-        print(userSavedListings)
         con.close()
 
         return render_template("index.html", user=session['user'], jobs=jobListings, saved=userSavedListings)
-    # Populating listings
+
     else:
         return render_template("index.html", jobs=jobListings)
 
