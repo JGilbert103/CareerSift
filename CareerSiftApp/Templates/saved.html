@@ -1,37 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>CareerSift - Your Job and Internship Finding Website for Charlotte!</title>
-        <link rel="stylesheet" type="text/css" href="/static/styles.css">
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
-    </head>
-    <body>
-        <div class="nav-back">
-            <nav class = "nav-content">
-                <a href="index.html"><img src="/static/CS-logo.png" alt="Career-Sift" width="100px" height="66px"></a>
-                <ul>
-                    <li><a href="{{ url_for('index') }}">Home</a></li>
-                    {% if user %}
-                    <li><a href="{{ url_for('saved') }}">Saved</a></li> <!-- only if logged in -->
-                    {% endif %}
-                    <li><a href="{{ url_for('about') }}">About</a></li>
-                    <li><a href="{{ url_for('contact') }}">Contact</a></li>
-                    {% if user %}
-                    <li><a href="{{ url_for('logout') }}"class="but LI">Logout</a></li>
-                    {% else %}
-                    <li><a href="{{ url_for('login') }}"class="but LI">Log in</a></li> <!-- only if logged out -->
-                    {% endif %}
-                    <!-- <li><a href="register.html"class="but REG">Register</a></li> maybe if either of these are clicked it goes to their respective one? -->
-                    <li><a href="{{ url_for('settings') }}"><img class="contact-chip" src="/static/JakePic.jpg" width="50px" height="50px"></a></li>
-                </ul>
-            </nav>
-            <hr> 
-        </div>
-
+{% include "navbar.html" %}
         <div class="main-container">
             <section class="filters">
                 <h3>Refine your Search</h3>
@@ -54,13 +21,94 @@
             <div class="search-cards">
                 <form action="{{ url_for('saved') }}" method="GET" class="job-search-bar">
                     <input type="search" name="search" placeholder="Search for jobs..." value="{{ request.args.get('search', '') }}" class="search">
+                    <a class="no compareBtn">Compare</a>
                 </form>
-                <button><a href="compare.html">Compare</a></button>
-                <div class="cards">
+                
+                {% autoescape false %}
+                <script>
+                    document.addEventListener("DOMContentLoaded", () => {
+                        const checkboxes = document.querySelectorAll(".card #choice");
+                        const compareBtn = document.querySelector(".compareBtn");
+                    
+                        const updateButtonState = () => {
+                            
+                            const checkedCount = Array.from(checkboxes).filter(checkbox => checkbox.checked).length;
+                            if (checkedCount === 2) {
+                                compareBtn.classList.remove("no");
+                                compareBtn.setAttribute("href", "compare.html");
+                                compareBtn.style.cursor = "pointer";
+                                compareBtn.style.pointerEvents = "auto"; // Enable the button.
+                            } else {
+                                compareBtn.classList.add("no");
+                                compareBtn.style.cursor = "not-allowed";
+                                compareBtn.setAttribute("href", "");
+                                compareBtn.style.pointerEvents = "none"; // Disable the button.
+                            }
+                        };
+                    
+                        // Initialize button state
+                        updateButtonState();
+                    
+                        // Add event listeners to checkboxes
+                        checkboxes.forEach(checkbox => {
+                            checkbox.addEventListener("change", updateButtonState);
+                        });
+
+                        const slider = document.getElementById("sal");
+                const amtDisplay = document.getElementById("amt");
+                amtDisplay.textContent = "$0";
+                slider.addEventListener("input", () => {
+                    if (slider.value == 0) {
+                        amtDisplay.textContent = "$0";  
+                    } else {
+                        amtDisplay.textContent = `$0 - $${slider.value}`;
+                    }
+                });
+
+                const stars = document.querySelectorAll(".star");
+                stars.forEach((star) => {
+                    star.addEventListener("click", () => {
+                        const listid = star.dataset.listid;
+                        const isSaved = star.src.includes("star-icon-filled.png");
+                        
+                        if (star.src.includes("star-icon.png")) {
+                            star.src = "/static/star-icon-filled.png";
+                        } else {
+                            star.src = "/static/star-icon.png";
+                        }
+
+                        star.src = isSaved ? "/static/star-icon.png" : "/static/star-icon-filled.png";
+
+                        fetch(isSaved ? '/unsaveListing' : '/saveListing', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ listid: listid }),
+                        })
+                        .then((response) => {
+                            if (!response.ok) {
+                                throw new Error('Failed to save or unsave listing.');
+                            }
+                        })
+                        .catch((error) => {
+                            console.error(error);
+                            star.src = isSaved 
+                                ? "/static/star-icon-filled.png" 
+                                : "/static/star-icon.png";
+                            alert('An error occurred while saving or unsaving the listing.');
+                        });
+                    });
+                });
+                    });
+                </script>
+                {% endautoescape %}
+                <div class="saved-cards">
                     {% if jobs %}
                     {% for job in jobs %}
                     <div class="card">
                         <input type="checkbox" id="choice" name="choice">
+                        <img class="star" src="/static/star-icon-filled.png" data-listid="{{ job[0] }}">
                         <a href="{{ url_for('savedlisting', listid=job[0]) }}">
                             <h2>{{ job[1] }}</h2>
                             <p>{{ job[2] }}</p>

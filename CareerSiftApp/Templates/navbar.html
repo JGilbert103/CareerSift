@@ -11,8 +11,11 @@
     </head>
     <body>
         <div class="nav-back">
-            <nav class = "nav-content">
-                <a href="index.html"><img src="/static/CS-logo.png" alt="Career-Sift" width="100px" height="66px"></a>
+            <nav class="nav-content">
+                <div class="logo-container">
+                    <a href="index.html"><img src="/static/CS-logo.png" alt="Career-Sift" width="100px" height="66px"></a>
+                    <a href="index.html"><p>CareerSift</p></a>
+                </div>
                 <ul>
                     <li><a href="{{ url_for('index') }}">Home</a></li>
                     {% if user %}
@@ -21,16 +24,14 @@
                     <li><a href="{{ url_for('about') }}">About</a></li>
                     <li><a href="{{ url_for('contact') }}">Contact</a></li>
                     {% if user %}
-                    <li><a href="{{ url_for('logout') }}"class="but LI">Logout</a></li>
+                    <li><a href="{{ url_for('logout') }}" class="but LI">Logout</a></li>
                     {% else %}
-                    <li><a href="{{ url_for('login') }}"class="but LI">Log in</a></li> <!-- only if logged out -->
+                    <li><a href="{{ url_for('login') }}" class="but LI">Log in</a></li> <!-- only if logged out -->
                     {% endif %}
-                    <!-- <li><a href="register.html"class="but REG">Register</a></li> maybe if either of these are clicked it goes to their respective one? -->
                     <li><a href="{{ url_for('settings') }}"><img class="contact-chip" src="/static/JakePic.jpg" width="50px" height="50px"></a></li>
                 </ul>
             </nav>  
         </div>
         <hr>
-    </body>
-</html>
+
 <!--Finished-->
