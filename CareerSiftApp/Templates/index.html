@@ -87,7 +87,7 @@
             <div class="filters">
                 <h3>Refine your Search</h3>
                 <hr>
-                <h5>Location:</h5>
+                <h5>Type:</h5>
                 <input type="checkbox" id="remote" name="remote"><label for="remote">Remote</label><br>
                 <input type="checkbox" id="os" name="os"><label for="os">On-Site</label><br>
                 <input type="checkbox" id="hybrid" name="hybrid"><label for="hybrid">Hybrid</label><br>
@@ -108,7 +108,11 @@
                     {% for job in jobs %}
                     <div class="card">
                         {% if user %}
+                        {% if job[0] in saved %}
+                        <img class="star" src="/static/star-icon-filled.png" data-listid="{{ job[0] }}"> <!--Only if logged in-->
+                        {% else %}
                         <img class="star" src="/static/star-icon.png" data-listid="{{ job[0] }}"> <!--Only if logged in-->
+                        {% endif %}
                         {% endif %}
                         <br>
                         <a href="{{ url_for('listings', listid=job[0]) }}">

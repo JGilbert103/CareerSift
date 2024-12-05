@@ -31,12 +31,12 @@
             </nav>
             <hr> 
         </div>
-        <h1>SAVED</h1>
+
         <div class="main-container">
             <section class="filters">
                 <h3>Refine your Search</h3>
                 <hr>
-                <h5>Location:</h5>
+                <h5>Type:</h5>
                 <input type="checkbox" id="remote" name="remote"><label for="remote">Remote</label><br>
                 <input type="checkbox" id="os" name="os"><label for="os">On-Site</label><br>
                 <input type="checkbox" id="hybrid" name="hybrid"><label for="hybrid">Hybrid</label><br>
@@ -52,13 +52,14 @@
                 <hr>
             </section>
             <div class="search-cards">
+                <input type="search" placeholder="Search" class="search">
                 <button><a href="compare.html">Compare</a></button>
                 <div class="cards">
                     {% if jobs %}
                     {% for job in jobs %}
                     <div class="card">
                         <input type="checkbox" id="choice" name="choice">
-                        <a href="{{ url_for('listings', listid=job[0]) }}">
+                        <a href="{{ url_for('savedlisting', listid=job[0]) }}">
                             <h2>{{ job[1] }}</h2>
                             <p>{{ job[2] }}</p>
                             <hr>

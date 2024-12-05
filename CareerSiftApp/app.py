@@ -122,7 +122,6 @@ def getData(listid):
     
     # Fetching the listing
     listingData = cursor.fetchone()
-    print(listingData)
     
     # Closing the connection to the database
     conn.close()
@@ -253,7 +252,6 @@ def login():
         # Redirect user to login form
         #flash('Invalid username or password', 'error')
         return render_template("login.html", form=LoginForm)
-
 
 
 
@@ -459,14 +457,27 @@ def compare():
 @app.route('/saved.html', methods=['GET'])
 def saved():
     # Checking which users saved listings to access
-    userid = session['userid']
-    print(userid)
-    if not userid:
-        return redirect(url_for('login'))
-    
-    savedJobs = getSaved(userid)
+    if session.get('user'):
+        userid = session['userid']
+        savedJobs = getSaved(userid)
+        return render_template("saved.html", user=session['user'], jobs=savedJobs)
 
-    return render_template("saved.html", user=session['user'], jobs=savedJobs)
+    return redirect(url_for('login'))
+
+
+
+@app.route('/savedlisting/<int:listid>')
+def savedlisting(listid):
+
+    listingData = getData(listid)
+
+    if listingData:
+        if session.get('user'):
+            return render_template('savedlisting.html', user=session['user'], listing=listingData)
+        else:
+            return render_template('savedlisting.html', listing=listingData)
+    else:
+        return "Listing not found", 404
 
 
 
@@ -489,7 +500,10 @@ def listings(listid):
     listingData = getData(listid)
 
     if listingData:
-        return render_template('listing.html', listing=listingData)
+        if session.get('user'):
+            return render_template('listing.html', user=session['user'], listing=listingData)
+        else:
+            return render_template('listing.html', listing=listingData)
     else:
         return "Listing not found", 404
 
