@@ -149,7 +149,7 @@ def getData(listid):
 
 
 # Method to handle populating listings saved by a user
-def getSaved(userid):
+def getSaved(userid, savedSearchQuery=None):
     conn = sqlite3.connect('CareerSiftDB.db')
     cursor = conn.cursor()
     
@@ -166,20 +166,39 @@ def getSaved(userid):
 
     # Only proceed if there are saved listids
     if savedIds:
-        # Querying the listing table using the list of listids
-        cursor.execute("""
-            SELECT listid, title, company, position, salary, type, sourcelink, description
-            FROM listing
-            WHERE listid IN ({})
-        """.format(','.join('?' for _ in savedIds)), savedIds)
+        if savedSearchQuery:
+            # Prepare the query to search with LIKE
+            query = """
+                SELECT listid, title, company, position, salary, type, sourcelink, description
+                FROM listing
+                WHERE listid IN ({})
+                AND (
+                    title LIKE ? OR 
+                    company LIKE ? OR 
+                    description LIKE ?
+                )
+            """.format(','.join('?' for _ in savedIds))
+            
+            # Adding wildcard search pattern for LIKE
+            searchPattern = f"%{savedSearchQuery}%"
+            params = savedIds + [searchPattern] * 3  # Combine savedIds and search patterns
+        else:
+            # Query without a search term
+            query = """
+                SELECT listid, title, company, position, salary, type, sourcelink, description
+                FROM listing
+                WHERE listid IN ({})
+            """.format(','.join('?' for _ in savedIds))
+            params = savedIds
         
+        # Execute the query with parameters
+        cursor.execute(query, params)
         jobs = cursor.fetchall()
-        
+        conn.close()
         return jobs
     else:
+        conn.close()
         return []
-
-    conn.close()
 
 
 ###   Methods to handle register, login, and logout   ###
@@ -477,7 +496,10 @@ def saved():
     # Checking which users saved listings to access
     if session.get('user'):
         userid = session['userid']
-        savedJobs = getSaved(userid)
+
+        savedSearchQuery = request.args.get('search', '')
+        savedJobs = getSaved(userid, savedSearchQuery)
+
         return render_template("saved.html", user=session['user'], jobs=savedJobs)
 
     return redirect(url_for('login'))

@@ -52,7 +52,9 @@
                 <hr>
             </section>
             <div class="search-cards">
-                <input type="search" placeholder="Search" class="search">
+                <form action="{{ url_for('saved') }}" method="GET" class="job-search-bar">
+                    <input type="search" name="search" placeholder="Search for jobs..." value="{{ request.args.get('search', '') }}" class="search">
+                </form>
                 <button><a href="compare.html">Compare</a></button>
                 <div class="cards">
                     {% if jobs %}
