@@ -292,10 +292,21 @@ def index():
 
     # Session verification and populating listings
     if session.get('user'):
-            return render_template("index.html", user=session['user'], jobs=jobListings)
+        con = sqlite3.connect('CareerSiftDB.db')
+        cursor = con.cursor()
+        userid = session['userid']
+        cursor.execute("SELECT listid FROM savedListing WHERE userid = ?", (userid,))
+
+        userSavedListings = cursor.fetchall()
+        userSavedListings = [x[0] for x in userSavedListings]
+
+        print(userSavedListings)
+        con.close()
+
+        return render_template("index.html", user=session['user'], jobs=jobListings, saved=userSavedListings)
     # Populating listings
     else:
-            return render_template("index.html", jobs=jobListings)
+        return render_template("index.html", jobs=jobListings)
 
 
 
