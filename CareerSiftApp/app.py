@@ -8,7 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
 from database import db
 from models import user, listing, savedListing, messages, contactMessage
-from forms import RegisterForm, LoginForm, ContactForm, PersonalInfoForm, ChangePasswordForm, DeleteAccountForm
+from forms import RegisterForm, LoginForm, ContactForm, PersonalInfoForm, ChangePasswordForm, DeleteAccountForm#, FiltersForm
 #import jobScraper
 
 app = Flask(__name__)
@@ -90,28 +90,49 @@ def removeListing(listid):
 '''
 
 # Method to populate job listings to home/index page
-def populateListings(searchTerm=''):
+def populateListings(searchTerm='', jobType=[], position=[]):
     # Connecting to the database
     conn = sqlite3.connect('CareerSiftDB.db')
     cursor = conn.cursor()
-    
-    if searchTerm:
-        query = """
-            SELECT listid, title, company, position, salary, type, sourcelink, description
-            FROM listing
-            WHERE title LIKE ? OR company LIKE ? OR description LIKE ?
-        """
-        like_pattern = f"%{searchTerm}%"  # Prepare the pattern for partial matching
-        cursor.execute(query, (like_pattern, like_pattern, like_pattern))
-    
-    else:
-        # Retrieve all listings if no search term is provided
-        query = """
-            SELECT listid, title, company, position, salary, type, sourcelink, description
-            FROM listing
-        """
-        cursor.execute(query)
 
+    # Base query that retrieves all listings
+    query = """
+        SELECT listid, title, company, position, salary, type, sourcelink, description
+        FROM listing
+        WHERE 1=1
+    """
+    
+    # List to store parameters for the query
+    params = []
+
+    # If a search term is provided, add to the query
+    if searchTerm:
+        like_pattern = f"%{searchTerm}%"
+        query += " AND (title LIKE ? OR company LIKE ? OR position LIKE ? OR type LIKE ? OR description LIKE ?)"
+        params.extend([like_pattern, like_pattern, like_pattern, like_pattern, like_pattern])
+
+    # If jobType is provided, add to the query
+    if jobType:
+        like_clauses = [f"description LIKE ?" for _ in jobType]  # Create LIKE clause for each jobType
+        query += " AND (" + " OR ".join(like_clauses) + ")"  # Combine with OR
+        params.extend([f"%{jt}%" for jt in jobType])
+    
+    # If position is provided, add to the query
+    if position:
+        like_clauses = [f"salary LIKE ?" for _ in position]  # Create LIKE clause for each position
+        query += " AND (" + " OR ".join(like_clauses) + ")"  # Combine with OR
+        params.extend([f"%{pos}%" for pos in position])
+    
+    # If no filters (searchTerm, jobType, position) are provided, we return all listings
+    if searchTerm is None and jobType is None and position is None:
+        query = """
+            SELECT listid, title, company, position, salary, type, sourcelink, description
+            FROM listing
+        """
+        params = []
+    # Execute the query with parameters
+    cursor.execute(query, params)
+    
     # Fetching the results
     jobs = cursor.fetchall()
 
@@ -120,7 +141,6 @@ def populateListings(searchTerm=''):
 
     # Returning the retrieved jobs
     return jobs
-
 
 
 # Method to handle populating a specific listing when clicked
@@ -307,6 +327,10 @@ def logout():
 @app.route('/')
 def index():
     searchTerm = request.args.get('search', '').strip()
+    jobType = request.args.getlist('jobType')
+    print(jobType)
+    position = request.args.getlist('position')
+    print(position)
     # Checking if listings exist in the database before calling createListing function
     con = sqlite3.connect('CareerSiftDB.db')
     cursor = con.cursor()
@@ -320,7 +344,7 @@ def index():
         createListing()
 
     # Calling populateListings function
-    jobListings = populateListings(searchTerm)
+    jobListings = populateListings(searchTerm, jobType, position)
 
     # Session verification and populating listings
     if session.get('user'):

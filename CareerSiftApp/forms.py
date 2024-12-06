@@ -82,5 +82,11 @@ class ChangePasswordForm(FlaskForm):
 class DeleteAccountForm(FlaskForm):
     class Meta:
         csrf = False
-        
+
     submit = SubmitField('Delete Account')
+
+'''class FiltersForm(FlaskForm):
+    class Meta:
+        csrf = False
+
+    submit = SubmitField('Apply Filters')'''

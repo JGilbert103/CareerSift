@@ -55,19 +55,22 @@
                 <h3>Refine your Search</h3>
                 <hr>
                 <h5>Type:</h5>
-                <input type="checkbox" id="remote" name="remote"><label for="remote">Remote</label><br>
-                <input type="checkbox" id="os" name="os"><label for="os">On-Site</label><br>
-                <input type="checkbox" id="hybrid" name="hybrid"><label for="hybrid">Hybrid</label><br>
-                <hr>
-                <h5>Position:</h5>
-                <input type="checkbox" id="FT" name="FT"><label for="FT">Full-Time</label><br>
-                <input type="checkbox" id="PT" name="PT"><label for="PT">Part-Time</label><br>
-                <input type="checkbox" id="contract" name="contract"><label for="contract">Contract</label><br>
-                <hr>
-                <h5>Salary:</h5>
-                <p class="amt" id="amt"></p>
-                <input type="range" id="sal" name="sal" min="0" max="175000" value="0" step="1000"><br>
-                <hr>
+                <form id="FiltersForm" action="/" method="GET">
+                    <input type="checkbox" id="remote" name="jobType" value="remote"><label for="remote">Remote</label><br>
+                    <input type="checkbox" id="os" name="jobType" value="site"><label for="os">On-Site</label><br>
+                    <input type="checkbox" id="hybrid" name="jobType" value="hybrid"><label for="hybrid">Hybrid</label><br>
+                    <hr>
+                    <h5>Position:</h5>
+                    <input type="checkbox" id="FT" name="position" value="full"><label for="FT">Full-Time</label><br>
+                    <input type="checkbox" id="PT" name="position" value="part"><label for="PT">Part-Time</label><br>
+                    <input type="checkbox" id="contract" name="position" value="contract"><label for="contract">Contract</label><br>
+                    <hr>
+                    <!-- <h5>Salary:</h5>
+                    <p class="amt" id="amt"></p>
+                    <input type="range" id="sal" name="sal" min="0" max="175000" value="0" step="1000"><br>
+                    <hr> -->
+                    <button type="submit">Apply Filters</button>
+                </form>
             </div>
             <div class="search-cards">
                 <form action="/" method="GET" class="job-search-bar">
