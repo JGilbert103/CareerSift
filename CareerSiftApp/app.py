@@ -485,7 +485,7 @@ def compareJobs(listids):
 
     jobs = cursor.fetchall()
     for job in jobs:
-        print(f"Salary for job {job[0]}: {job[1]}: {job[2]}: {job[3]}: {job[4]}: {job[5]}: {job[6]} {job[7]}:")
+        print(f"Salary for job {job[0]}: {job[1]}: {job[2]}: {job[3]}: {job[4]}: {job[5]}: {job[6]} ")
     conn.close()
     return jobs
 
