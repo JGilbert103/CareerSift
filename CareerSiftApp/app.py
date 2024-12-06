@@ -222,50 +222,56 @@ def getSaved(userid, savedSearchQuery=None):
 ## Method for registering a user
 @app.route('/register.html', methods=['POST', 'GET'])
 def register():
-    form = RegisterForm()
 
-    if request.method == 'POST' and form.validate_on_submit():
+    if session.get('user'):
+        return redirect(url_for('index'))
 
-        # Gathering user data entered to the application
-        username = form.username.data
-        email = form.email.data.strip() if form.email.data else None
-        password = form.password.data
+    else:
 
-        # Create a new user object
-        conn = sqlite3.connect('CareerSiftDB.db')
-        cursor = conn.cursor()
+        form = RegisterForm()
 
-        cursor.execute("SELECT * FROM user WHERE username = ?", (username,))
-        existingUsername = cursor.fetchone()
+        if request.method == 'POST' and form.validate_on_submit():
 
-        if existingUsername is not None:
-            flash('Account already exisits with given username', 'error')
-            conn.close()
-            return redirect(url_for('register'))
-        
-        if email is not None:
-            cursor.execute("SELECT * FROM user WHERE email = ?", (email,))
-            existingEmail = cursor.fetchone()
+            # Gathering user data entered to the application
+            username = form.username.data
+            email = form.email.data.strip() if form.email.data else None
+            password = form.password.data
 
-            if existingEmail is not None:
-                flash('Account already exisits with given email', 'error')
+            # Create a new user object
+            conn = sqlite3.connect('CareerSiftDB.db')
+            cursor = conn.cursor()
+
+            cursor.execute("SELECT * FROM user WHERE username = ?", (username,))
+            existingUsername = cursor.fetchone()
+
+            if existingUsername is not None:
+                flash('Account already exisits with given username', 'error')
                 conn.close()
                 return redirect(url_for('register'))
+            
+            if email is not None:
+                cursor.execute("SELECT * FROM user WHERE email = ?", (email,))
+                existingEmail = cursor.fetchone()
 
-        cursor.execute("INSERT INTO user (username, password, email, isadmin) VALUES (?, ?, ?, ?)",
-                       (username, password, email, False))
-        conn.commit()
+                if existingEmail is not None:
+                    flash('Account already exisits with given email', 'error')
+                    conn.close()
+                    return redirect(url_for('register'))
 
-        cursor.execute("SELECT userid FROM user WHERE username = ?", (username,))
-        newUser = cursor.fetchone()
+            cursor.execute("INSERT INTO user (username, password, email, isadmin) VALUES (?, ?, ?, ?)",
+                        (username, password, email, False))
+            conn.commit()
 
-        conn.close()
-        
-        session['user'] = username
-        session['userid'] = newUser[0]
+            cursor.execute("SELECT userid FROM user WHERE username = ?", (username,))
+            newUser = cursor.fetchone()
 
-        # Redirect user to home/index page
-        return redirect(url_for('index'))
+            conn.close()
+            
+            session['user'] = username
+            session['userid'] = newUser[0]
+
+            # Redirect user to home/index page
+            return redirect(url_for('index'))
     
     # If there was an error with registering, redirect to register form
     #flash('All fields must be full to register', 'error')
@@ -276,35 +282,37 @@ def register():
 ## Method for logging in a user
 @app.route('/login.html', methods=['POST', 'GET'])
 def login():
-    form = LoginForm()
-    # Validating login form on submission
-    if form.validate_on_submit():
-        # If form is valid, searching the databse for the matching user
-        conn = sqlite3.connect('CareerSiftDB.db')
-        cursor = conn.cursor()
-        
-        cursor.execute("SELECT userid, username, password, email FROM user WHERE username = ?", (form.username.data,))
-        user = cursor.fetchone()
 
-        # Checking user password
-        if user and form.password.data == user[2]:
-            # If the password is correct, adding the user to the session
-            userid, username, password, email = user
+    if session.get('user'):
+        return redirect(url_for('index'))
 
-            session['user'] = username
-            session['userid'] = user[0]
-            # Redirect user to home/index page
-            return redirect(url_for('index'))
-        
-        # Redirect user to login form
-        flash('Invalid username or password', 'error')
-        return render_template("login.html", form=LoginForm)
+    else:
+        form = LoginForm()
+        # Validating login form on submission
+        if form.validate_on_submit():
+            # If form is valid, searching the databse for the matching user
+            conn = sqlite3.connect('CareerSiftDB.db')
+            cursor = conn.cursor()
+            
+            cursor.execute("SELECT userid, username, password, email FROM user WHERE username = ?", (form.username.data,))
+            user = cursor.fetchone()
+
+            # Checking user password
+            if user and form.password.data == user[2]:
+                # If the password is correct, adding the user to the session
+                userid, username, password, email = user
+
+                session['user'] = username
+                session['userid'] = user[0]
+                # Redirect user to home/index page
+                return redirect(url_for('index'))
+            
+            # Redirect user to login form
+            flash('Invalid username or password', 'error')
+            return render_template("login.html", form=LoginForm)
 
     # If the form did not validate
-    else:
-        # Redirect user to login form
-        #flash('Invalid username or password', 'error')
-        return render_template("login.html", form=LoginForm)
+    return render_template("login.html", form=LoginForm)
 
 
 
