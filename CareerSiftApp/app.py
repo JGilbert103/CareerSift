@@ -8,7 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
 from database import db
 from models import user, listing, savedListing, messages, contactMessage
-from forms import RegisterForm, LoginForm, ContactForm, PersonalInfoForm, ChangePasswordForm
+from forms import RegisterForm, LoginForm, ContactForm, PersonalInfoForm, ChangePasswordForm, DeleteAccountForm
 #import jobScraper
 
 app = Flask(__name__)
@@ -531,7 +531,7 @@ def settings():
         personalInfoForm = PersonalInfoForm()
         #notificationsForm = NotificationsForm()
         changePasswordForm = ChangePasswordForm()
-        #logoutDeleteForm = LogoutDeleteForm()
+        deleteAccountForm = DeleteAccountForm()
 
         if personalInfoForm.validate_on_submit():
             username = personalInfoForm.username.data
@@ -555,7 +555,7 @@ def settings():
                 flash(f"An error occurred: {e}", "danger")
             
             #flash("Please provide a new username or upload a profile picture.", "personal-info-error")
-            return render_template("settings.html", user=session['user'], personalInfoForm=personalInfoForm, changePasswordForm=changePasswordForm) 
+            return render_template("settings.html", user=session['user'], personalInfoForm=personalInfoForm, changePasswordForm=changePasswordForm, deleteAccountForm=deleteAccountForm) 
 
         #if notificationsForm.validate_on_submit():
 
@@ -572,18 +572,26 @@ def settings():
 
                 if storedPassword != currentPassword:
                     flash('Invalid current password', 'error')
-                    return render_template("settings.html", user=session['user'], personalInfoForm=personalInfoForm, changePasswordForm=changePasswordForm) 
+                    return render_template("settings.html", user=session['user'], personalInfoForm=personalInfoForm, changePasswordForm=changePasswordForm, deleteAccountForm=deleteAccountForm) 
 
                 updatePassword(userid, newPassword)
 
             except Exception as e:
                 #flash(f"An error occurred: {e}", "danger")
-                return render_template("settings.html", user=session['user'], personalInfoForm=personalInfoForm, changePasswordForm=changePasswordForm) 
+                return render_template("settings.html", user=session['user'], personalInfoForm=personalInfoForm, changePasswordForm=changePasswordForm, deleteAccountForm=deleteAccountForm)
+
+        if deleteAccountForm.validate_on_submit():
+            try:
+                deleteUser(userid)
+                return redirect(url_for('logout'))
+            except Exception as e:
+                #flash(f"An error occurred: {e}", "danger")
+                return render_template("settings.html", user=session['user'], personalInfoForm=personalInfoForm, changePasswordForm=changePasswordForm, deleteAccountForm=deleteAccountForm)
 
 
         # Redirect user to their settings page
         #flash('Invalid current password', 'error')
-        return render_template("settings.html", user=session['user'], personalInfoForm=personalInfoForm, changePasswordForm=changePasswordForm)    
+        return render_template("settings.html", user=session['user'], personalInfoForm=personalInfoForm, changePasswordForm=changePasswordForm, deleteAccountForm=deleteAccountForm)    
     else:
         # Redirect user to settings page
         return redirect(url_for('login'))   
@@ -618,10 +626,11 @@ def updatePassword(userid, newPassword):
 
     except Exception as e:
         flash(f"An error occurred: {e}", "danger")
-        return render_template("settings.html", user=session['user'], personalInfoForm=personalInfoForm, changePasswordForm=changePasswordForm)
+        return render_template("settings.html", user=session['user'], personalInfoForm=personalInfoForm, changePasswordForm=changePasswordForm, deleteAccountForm=deleteAccountForm)
     
     finally:
         conn.close()
+
 
 
 def updatePersonalInfo(userid, username):
@@ -636,6 +645,23 @@ def updatePersonalInfo(userid, username):
     except Exception as e:
         db.session.rollback()
         print(f"Error creating listings: {e}", "error")
+    
+    finally:
+        conn.close()
+
+
+
+def deleteUser(userid):
+    conn = sqlite3.connect('CareerSiftDB.db')
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("DELETE FROM user WHERE userid = ?", (userid,))
+        conn.commit()
+
+    except Exception as e:
+        flash(f"An error occurred: {e}", "danger")
+        return render_template("settings.html", user=session['user'], personalInfoForm=personalInfoForm, changePasswordForm=changePasswordForm)
     
     finally:
         conn.close()

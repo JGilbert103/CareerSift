@@ -78,3 +78,9 @@ class ChangePasswordForm(FlaskForm):
     confirmPassword = PasswordField('confirmPassword', validators=[DataRequired()])
 
     submit = SubmitField('Change Password')
+
+class DeleteAccountForm(FlaskForm):
+    class Meta:
+        csrf = False
+        
+    submit = SubmitField('Delete Account')
