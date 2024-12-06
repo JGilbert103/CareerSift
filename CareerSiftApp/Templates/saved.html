@@ -32,17 +32,21 @@
                     
                         const updateButtonState = () => {
                             
-                            const checkedCount = Array.from(checkboxes).filter(checkbox => checkbox.checked).length;
-                            if (checkedCount === 2) {
+                            const selectedIds = Array.from(checkboxes)
+                                .filter(checkbox => checkbox.checked)
+                                .map(checkbox => checkbox.getAttribute("data-listid"));
+
+                            if (selectedIds.length === 2) {
                                 compareBtn.classList.remove("no");
-                                compareBtn.setAttribute("href", "compare.html");
+                                // Update the href dynamically using template literals
+                                compareBtn.setAttribute("href", `{{ url_for('compare') }}?compare=${selectedIds.join('&compare=')}`);
                                 compareBtn.style.cursor = "pointer";
-                                compareBtn.style.pointerEvents = "auto"; // Enable the button.
+                                compareBtn.style.pointerEvents = "auto"; // Enable the button
                             } else {
                                 compareBtn.classList.add("no");
                                 compareBtn.style.cursor = "not-allowed";
-                                compareBtn.setAttribute("href", "");
-                                compareBtn.style.pointerEvents = "none"; // Disable the button.
+                                compareBtn.setAttribute("href", "#");
+                                compareBtn.style.pointerEvents = "none"; // Disable the button
                             }
                         };
                     
@@ -107,7 +111,7 @@
                     {% if jobs %}
                     {% for job in jobs %}
                     <div class="card">
-                        <input type="checkbox" id="choice" name="choice">
+                        <input type="checkbox" id="choice" name="choice" data-listid="{{ job[0] }}">
                         <img class="star" src="/static/star-icon-filled.png" data-listid="{{ job[0] }}">
                         <a href="{{ url_for('savedlisting', listid=job[0]) }}">
                             <h2>{{ job[1] }}</h2>

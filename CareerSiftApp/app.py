@@ -31,25 +31,21 @@ def createListing():
             # Iterate through each row in the CSV file
             for row in reader:
                 title = row["title"].strip()
-                print("title: ", title)
                 company = row["company"].strip()
-                #print("company:", company)
+
                 position = row["position"].strip()
-                #print("position: ", position)
+
                 salary = row["salary"].strip()
-                #print("salary:", salary)
+
                 jobtype = row["type"].strip()
-                #print("type: ", jobtype)
+
                 sourcelink = row["sourceLink"].strip()
-                #print("link: ", sourcelink)
+
                 description = row["description"].strip()
 
                 description = description.replace(';', ',')
                 description = description.replace('~~', '\n')
 
-                #print("desc: ", description)
-
-                #print(f"Adding Listing: {title}, {company}, {position}, {salary}, {jobtype}, {sourcelink}, {description}")
                 conn = sqlite3.connect('CareerSiftDB.db')
                 cursor = conn.cursor()
 
@@ -351,29 +347,20 @@ def saveListing():
     # Recieve the incoming json data from front end
     data = request.json
     temp = data.get('listid')
-    print(type(data.get('listid')))
     listid = int(temp)
 
     try:
         userid = session['userid']
-        ##print(f"in POST method user = ", userid)
         conn = sqlite3.connect('CareerSiftDB.db')
         cursor = conn.cursor()
-
-        print("before sql request")
 
         cursor.execute("SELECT * FROM savedListing WHERE userid = ? AND listid = ?", (userid, listid))
         alreadySaved = cursor.fetchone()
 
-        print(alreadySaved)
-
         if alreadySaved is not None:
-            print("in isSaved conditional block")
             return jsonify({'error': 'This listing is already saved by the user'}), 407
 
         cursor.execute("INSERT INTO savedListing (userid, listid) VALUES (?, ?)", (userid, listid))
-        
-        print("executed insert")
 
         conn.commit()
         cursor.close()
@@ -391,34 +378,20 @@ def saveListing():
 def unsaveListing():
     data = request.json
     temp = data.get('listid')
-    print(type(data.get('listid')))
     listid = int(temp)
-    print(listid)
 
     try:
         userid = session['userid']
-        print(userid)
-        ##print(f"in POST method user = ", userid)
         conn = sqlite3.connect('CareerSiftDB.db')
         cursor = conn.cursor()
-
-        print("before sql request")
 
         cursor.execute("SELECT * FROM savedListing WHERE userid = ? AND listid = ?", (userid, listid))
         deleteListing = cursor.fetchone()
 
-        print("after sql request")
-
-        print(deleteListing)
-
         if deleteListing is None:
-            print("in deleteListing conditional block")
             return jsonify({'error': 'This listing is not saved by the user'}), 407
 
-        print("before delete")
         cursor.execute("DELETE FROM savedListing where userid = ? AND listid = ?", (userid, listid))
-        
-        print("executed delete")
 
         conn.commit()
         cursor.close()
@@ -450,7 +423,6 @@ def contact():
     if request.method == 'POST' and form.validate_on_submit():
         email = request.form.get('email')
         issue = request.form.get('issue')
-        #print(email, issue)
 
         conn = sqlite3.connect('CareerSiftDB.db')
         cursor = conn.cursor()
@@ -481,13 +453,41 @@ def thanks():
 
 
 ## ADD COMPARE PAGE FUNCTIONALITY
-@app.route('/compare.html', methods=['GET'])
+@app.route('/compare', methods=['POST','GET'])
 def compare():
+    listids = request.args.getlist('compare')
+
     if session.get('user'):
-        return render_template("compare.html", user=session['user'])
+        userid = session['userid']
+
+        comparedJobs = compareJobs(listids)
+
+        return render_template("compare.html", user=session['user'], jobs=comparedJobs)
+
     else:
         return render_template("compare.html")
 
+
+
+def compareJobs(listids):
+    conn = sqlite3.connect('CareerSiftDB.db')
+    cursor = conn.cursor()
+
+    print(f"List of IDs: {listids}")
+
+    query = """
+        SELECT listid, title, company, position, salary, type, sourcelink, description
+        FROM listing
+        WHERE listid IN ({})
+    """.format(','.join('?' for _ in listids))
+
+    cursor.execute(query, tuple(listids))
+
+    jobs = cursor.fetchall()
+    for job in jobs:
+        print(f"Salary for job {job[0]}: {job[1]}: {job[2]}: {job[3]}: {job[4]}: {job[5]}: {job[6]} {job[7]}:")
+    conn.close()
+    return jobs
 
 
 ## ADD SAVED FUNCTIONALITY
@@ -563,12 +563,8 @@ def settings():
             currentPassword = changePasswordForm.currentPassword.data
             newPassword = changePasswordForm.newPassword.data
 
-            print(currentPassword)
-            print(newPassword)
-
             try:
                 storedPassword = getPassword(userid)
-                print(storedPassword)
 
                 if storedPassword != currentPassword:
                     flash('Invalid current password', 'error')

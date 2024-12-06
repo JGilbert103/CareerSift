@@ -1,7 +1,7 @@
 {% include "navbar.html" %}
         <table class="compare">
             <div class="listing-nav">
-                <a href="saved.html"><img class="arrow" src="/static/LeftArrow.png" alt="Go Back" width="30px" height="30px"></a>
+                <a href="{{url_for('saved')}}"><img class="arrow" src="/static/LeftArrow.png" alt="Go Back" width="30px" height="30px"></a>
             </div>
             <tr>
                 <th colspan="5" class="bold">Compare:</th>
@@ -15,20 +15,15 @@
                 <th>Salary:</th>
             </tr>
             <tr><td colspan="5"><hr></td></tr>
+            {% for job in jobs %}
             <tr>
-                <td>Job 1</td>
-                <td>Employer 1</td>
-                <td>Position 1</td>
+                <td>{{ job[1] }}</td>
+                <td>{{ job[2] }} </td>
+                <td>{{ job[4] }}</td>
                 <td>Location 1</td>
-                <td>Salary 1</td>
+                <td>{{ job[3] }}</td>
             </tr>
-            <tr>
-                <td>Job 2</td>
-                <td>Employer 2</td>
-                <td>Position 2</td>
-                <td>Location 2</td>
-                <td>Salary 2</td>
-            </tr>
+            {% endfor %}
         </table>
     </body>
 </html>
