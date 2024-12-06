@@ -268,14 +268,14 @@ def register():
                         (username, password, email,))
             conn.commit()
 
-            cursor.execute("SELECT userid FROM user WHERE username = ?", (username,))
-            newUser = cursor.fetchone()
+            cursor.execute("SELECT userid, username, password, email, profilepic FROM user WHERE username = ?", (username,))
+            user = cursor.fetchone()
 
             conn.close()
             
             session['user'] = username
-            session['userid'] = newUser[0]
-            session['profilepic'] = newUser[4]
+            session['userid'] = user[0]
+            session['profilepic'] = user[4]
 
             # Redirect user to home/index page
             return redirect(url_for('index'))
@@ -312,9 +312,7 @@ def login():
                 session['user'] = username
                 session['userid'] = user[0]
                 session['profilepic'] = user[4]
-                print("user 4", user[4])
-                temp = session['profilepic']
-                print("temp", temp)
+
                 # Redirect user to home/index page
                 return redirect(url_for('index'))
             
@@ -514,8 +512,6 @@ def compareJobs(listids):
     conn = sqlite3.connect('CareerSiftDB.db')
     cursor = conn.cursor()
 
-    print(f"List of IDs: {listids}")
-
     query = """
         SELECT listid, title, company, position, salary, type, sourcelink, description
         FROM listing
@@ -525,8 +521,7 @@ def compareJobs(listids):
     cursor.execute(query, tuple(listids))
 
     jobs = cursor.fetchall()
-    for job in jobs:
-        print(f"Salary for job {job[0]}: {job[1]}: {job[2]}: {job[3]}: {job[4]}: {job[5]}: {job[6]} ")
+    
     conn.close()
     return jobs
 
@@ -581,13 +576,13 @@ def settings():
                 profilePic = personalInfoForm.profilePic.data
 
                 if username is None and profilePic is None:
-                    flash("Please provide a new username or upload a profile picture.", "personal-info-error")
+                    #flash("Please provide a new username or upload a profile picture.", "personal-info-error")
                     return redirect(url_for('settings'))
 
                 try:
                     if username:
                         updatePersonalInfo(userid, username=username)
-                        flash("Personal Information updated successfully!", "personal-info-success")
+                        #flash("Personal Information updated successfully!", "personal-info-success")
 
                 except Exception as e:
                     flash(f"An error occurred: {e}", "danger")
@@ -595,22 +590,16 @@ def settings():
                 try:
                     if profilePic and allowedFile(profilePic.filename):
                         filename = secure_filename(profilePic.filename)
-                        print("filename", filename)
 
                         newFilename = f"user_{userid}_{filename}"
-                        print("Renamed Filename:", newFilename)
 
                         profilePath = os.path.join(app.config['UPLOAD_FOLDER'], newFilename)
-                        print("Saving profile picture to:", profilePath)
 
                         profilePic.save(profilePath)
 
-                        profilePicUrl = f"/static/profilepics/{new_filename}"
+                        profilePicUrl = f"/static/profilepics/{newFilename}"
+
                         updatePersonalInfo(userid, profilePic=profilePicUrl)
-
-
-                    #try:
-                        #print("Working")
 
                 except Exception as e:
                     flash(f"An error occurred: {e}", "danger")
@@ -699,22 +688,15 @@ def updatePersonalInfo(userid, username=None, profilePic=None):
 
     conn = sqlite3.connect('CareerSiftDB.db')
     cursor = conn.cursor()
-
     try:
         if username is not None:
-
-            cursor.execute("UPDATE user SET username = ? WHERE userid = ?", (username, userid,))
+            cursor.execute("UPDATE user SET username = ? WHERE userid = ?", (username, userid))
 
         if profilePic is not None:
-            print("inside of profile pic")
-
             cursor.execute("UPDATE user SET profilepic = ? WHERE userid = ?", (profilePic, userid))
         
         conn.commit()
-    
     except Exception as e:
-        db.session.rollback()
-        print(f"Error creating listings: {e}", "error")
     
     finally:
         conn.close()
