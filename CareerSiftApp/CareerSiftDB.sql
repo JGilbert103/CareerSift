@@ -12,7 +12,8 @@ CREATE TABLE IF NOT EXISTS user (
     username VARCHAR(25),
     password TEXT,
     email VARCHAR(75),
-    isadmin BOOLEAN DEFAULT FALSE
+    isadmin BOOLEAN DEFAULT FALSE,
+    profilepic TEXT DEFAULT '/static/default.png'
 );
 
 -- Tables for listings

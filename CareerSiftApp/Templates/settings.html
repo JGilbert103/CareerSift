@@ -4,7 +4,8 @@
             <!-- Personal Information Section -->
             <section class="settings-section">
                 <h2>Personal Information</h2>
-                <form id="PersonalInfoForm" method="POST", action="/settings.html">
+                <form id="PersonalInfoForm" method="POST", action="/settings.html" enctype="multipart/form-data">
+                    <input type="hidden" name="form" value="PersonalInfoForm">
                     <label for="user">Username:</label>
                     <input type="text" id="username" name="username" placeholder="Your Username">
                     <br>
@@ -31,6 +32,7 @@
             <section class="settings-section">
                 <h2>Change Password</h2>
                 <form id="ChangePasswordForm" method="POST" action="/settings.html">
+                    <input type="hidden" name="form" value="ChangePasswordForm">
                     <label for="current-password">Current Password:</label>
                     <input type="password" id="currentPassword" name="currentPassword" placeholder="Current Password">
                     <br>
@@ -48,6 +50,7 @@
             <section class="settings-section">
                 <h2>Account Management</h2>
                 <form id="DeleteAccountForm" method="POST" action="/settings.html">
+                    <input type="hidden" name="form" value="DeleteAccountForm">
                     <button id="delete-account-btn" class="danger">Delete Account</button>
                 </form>
             </section>

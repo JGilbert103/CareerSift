@@ -64,8 +64,8 @@ class PersonalInfoForm(FlaskForm):
     class Meta:
         csrf = False
 
-    username = StringField('username', validators=[DataRequired()])
-    profilePic = FileField('Profile Picture')
+    username = StringField('username', validators=[Optional()])
+    profilePic = FileField('Profile Picture', validators=[Optional()])
 
     submit = SubmitField('Save Changes')
 

@@ -8,13 +8,19 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
 from database import db
 from models import user, listing, savedListing, messages, contactMessage
-from forms import RegisterForm, LoginForm, ContactForm, PersonalInfoForm, ChangePasswordForm, DeleteAccountForm#, FiltersForm
+from forms import RegisterForm, LoginForm, ContactForm, PersonalInfoForm, ChangePasswordForm, DeleteAccountForm
+from werkzeug.utils import secure_filename
+
 #import jobScraper
+
+UPLOAD_FOLDER = 'static/profilepics'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///CareerSiftDB.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = '12345'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 db.init_app(app)
 
 with app.app_context():
@@ -258,8 +264,8 @@ def register():
                     conn.close()
                     return redirect(url_for('register'))
 
-            cursor.execute("INSERT INTO user (username, password, email, isadmin) VALUES (?, ?, ?, ?)",
-                        (username, password, email, False))
+            cursor.execute("INSERT INTO user (username, password, email) VALUES (?, ?, ?)",
+                        (username, password, email,))
             conn.commit()
 
             cursor.execute("SELECT userid FROM user WHERE username = ?", (username,))
@@ -269,6 +275,7 @@ def register():
             
             session['user'] = username
             session['userid'] = newUser[0]
+            session['profilepic'] = newUser[4]
 
             # Redirect user to home/index page
             return redirect(url_for('index'))
@@ -294,16 +301,20 @@ def login():
             conn = sqlite3.connect('CareerSiftDB.db')
             cursor = conn.cursor()
             
-            cursor.execute("SELECT userid, username, password, email FROM user WHERE username = ?", (form.username.data,))
+            cursor.execute("SELECT userid, username, password, email, profilepic FROM user WHERE username = ?", (form.username.data,))
             user = cursor.fetchone()
 
             # Checking user password
             if user and form.password.data == user[2]:
                 # If the password is correct, adding the user to the session
-                userid, username, password, email = user
+                userid, username, password, email, profilepic = user
 
                 session['user'] = username
                 session['userid'] = user[0]
+                session['profilepic'] = user[4]
+                print("user 4", user[4])
+                temp = session['profilepic']
+                print("temp", temp)
                 # Redirect user to home/index page
                 return redirect(url_for('index'))
             
@@ -336,9 +347,7 @@ def logout():
 def index():
     searchTerm = request.args.get('search', '').strip()
     jobType = request.args.getlist('jobType')
-    print(jobType)
     position = request.args.getlist('position')
-    print(position)
     # Checking if listings exist in the database before calling createListing function
     con = sqlite3.connect('CareerSiftDB.db')
     cursor = con.cursor()
@@ -559,62 +568,82 @@ def settings():
     # Checking which users settings to access
     if session.get('user'):
 
-        userid = session['userid']
         personalInfoForm = PersonalInfoForm()
-        #notificationsForm = NotificationsForm()
         changePasswordForm = ChangePasswordForm()
         deleteAccountForm = DeleteAccountForm()
 
-        if personalInfoForm.validate_on_submit():
-            username = personalInfoForm.username.data
-            profilePic = personalInfoForm.profilePic.data
+        if request.method == 'POST':
+            userid = session['userid']
+            formType = request.form.get('form')
 
-            if username is None and profilePic is None:
-                flash("Please provide a new username or upload a profile picture.", "personal-info-error")
-                return redirect(url_for('settings'))
+            if formType == 'PersonalInfoForm' and personalInfoForm.validate_on_submit():
+                username = personalInfoForm.username.data
+                profilePic = personalInfoForm.profilePic.data
 
-            try:
-                if username:
-                    updatePersonalInfo(userid, username=username)
-                    flash("Personal Information updated successfully!", "personal-info-success")
+                if username is None and profilePic is None:
+                    flash("Please provide a new username or upload a profile picture.", "personal-info-error")
+                    return redirect(url_for('settings'))
 
-            #if profilePic:
+                try:
+                    if username:
+                        updatePersonalInfo(userid, username=username)
+                        flash("Personal Information updated successfully!", "personal-info-success")
 
-                #try:
-                    #print("Working")
+                except Exception as e:
+                    flash(f"An error occurred: {e}", "danger")
 
-            except Exception as e:
-                flash(f"An error occurred: {e}", "danger")
-            
-            #flash("Please provide a new username or upload a profile picture.", "personal-info-error")
-            return render_template("settings.html", user=session['user'], personalInfoForm=personalInfoForm, changePasswordForm=changePasswordForm, deleteAccountForm=deleteAccountForm) 
+                try:
+                    if profilePic and allowedFile(profilePic.filename):
+                        filename = secure_filename(profilePic.filename)
+                        print("filename", filename)
 
-        #if notificationsForm.validate_on_submit():
+                        newFilename = f"user_{userid}_{filename}"
+                        print("Renamed Filename:", newFilename)
 
-        if changePasswordForm.validate_on_submit():
-            currentPassword = changePasswordForm.currentPassword.data
-            newPassword = changePasswordForm.newPassword.data
+                        profilePath = os.path.join(app.config['UPLOAD_FOLDER'], newFilename)
+                        print("Saving profile picture to:", profilePath)
 
-            try:
-                storedPassword = getPassword(userid)
+                        profilePic.save(profilePath)
 
-                if storedPassword != currentPassword:
-                    flash('Invalid current password', 'error')
-                    return render_template("settings.html", user=session['user'], personalInfoForm=personalInfoForm, changePasswordForm=changePasswordForm, deleteAccountForm=deleteAccountForm) 
+                        profilePicUrl = f"/static/profilepics/{new_filename}"
+                        updatePersonalInfo(userid, profilePic=profilePicUrl)
 
-                updatePassword(userid, newPassword)
 
-            except Exception as e:
-                #flash(f"An error occurred: {e}", "danger")
-                return render_template("settings.html", user=session['user'], personalInfoForm=personalInfoForm, changePasswordForm=changePasswordForm, deleteAccountForm=deleteAccountForm)
+                    #try:
+                        #print("Working")
 
-        if deleteAccountForm.validate_on_submit():
-            try:
-                deleteUser(userid)
-                return redirect(url_for('logout'))
-            except Exception as e:
-                #flash(f"An error occurred: {e}", "danger")
-                return render_template("settings.html", user=session['user'], personalInfoForm=personalInfoForm, changePasswordForm=changePasswordForm, deleteAccountForm=deleteAccountForm)
+                except Exception as e:
+                    flash(f"An error occurred: {e}", "danger")
+                
+                #flash("Please provide a new username or upload a profile picture.", "personal-info-error")
+                return render_template("settings.html", user=session['user'], personalInfoForm=personalInfoForm, changePasswordForm=changePasswordForm, deleteAccountForm=deleteAccountForm) 
+
+            #if notificationsForm.validate_on_submit():
+
+            elif formType == 'ChangePasswordForm' and changePasswordForm.validate_on_submit():
+                currentPassword = changePasswordForm.currentPassword.data
+                newPassword = changePasswordForm.newPassword.data
+
+                try:
+                    storedPassword = getPassword(userid)
+
+                    if storedPassword != currentPassword:
+                        flash('Invalid current password', 'error')
+                        return render_template("settings.html", user=session['user'], personalInfoForm=personalInfoForm, changePasswordForm=changePasswordForm, deleteAccountForm=deleteAccountForm) 
+
+                    updatePassword(userid, newPassword)
+
+                except Exception as e:
+                    #flash(f"An error occurred: {e}", "danger")
+                    return render_template("settings.html", user=session['user'], personalInfoForm=personalInfoForm, changePasswordForm=changePasswordForm, deleteAccountForm=deleteAccountForm)
+
+            elif formType == 'DeleteAccountForm' and deleteAccountForm.validate_on_submit():
+                try:
+                    deleteUser(userid)
+                    return redirect(url_for('logout'))
+                except Exception as e:
+                    #flash(f"An error occurred: {e}", "danger")
+                    return render_template("settings.html", user=session['user'], personalInfoForm=personalInfoForm, changePasswordForm=changePasswordForm, deleteAccountForm=deleteAccountForm)
 
 
         # Redirect user to their settings page
@@ -623,6 +652,11 @@ def settings():
     else:
         # Redirect user to settings page
         return redirect(url_for('login'))   
+
+
+
+def allowedFile(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 
@@ -661,13 +695,21 @@ def updatePassword(userid, newPassword):
 
 
 
-def updatePersonalInfo(userid, username):
+def updatePersonalInfo(userid, username=None, profilePic=None):
 
     conn = sqlite3.connect('CareerSiftDB.db')
     cursor = conn.cursor()
 
     try:
-        cursor.execute("UPDATE user SET username = ? WHERE userid = ?", (username, userid,))
+        if username is not None:
+
+            cursor.execute("UPDATE user SET username = ? WHERE userid = ?", (username, userid,))
+
+        if profilePic is not None:
+            print("inside of profile pic")
+
+            cursor.execute("UPDATE user SET profilepic = ? WHERE userid = ?", (profilePic, userid))
+        
         conn.commit()
     
     except Exception as e:
