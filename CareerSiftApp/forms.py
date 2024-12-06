@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, TextAreaField, FileField
-from wtforms.validators import Length, Regexp, DataRequired, EqualTo, Email
+from wtforms.validators import Length, Regexp, DataRequired, EqualTo, Email, Optional
 from wtforms import ValidationError, BooleanField
 from models import user
 from database import db
@@ -14,7 +14,7 @@ class RegisterForm(FlaskForm):
     username = StringField('Username', validators=[Length(1, 25), DataRequired()])
     password = PasswordField('Password', validators=[DataRequired(), EqualTo('confirmPassword', message="Passwords must match")])
     confirmPassword = PasswordField('Confirm Password', validators=[DataRequired()])
-    email = StringField('Email', validators=[Email(message="Invalid email address"), DataRequired()])
+    email = StringField('Email', validators=[Optional(), Email(message="Invalid email address")])
     notifications = BooleanField('Link email for job notifications?')
     submit = SubmitField('Register')
 

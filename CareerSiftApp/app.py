@@ -225,11 +225,10 @@ def register():
     form = RegisterForm()
 
     if request.method == 'POST' and form.validate_on_submit():
-        # Salting and hashing user input for password
-        #shpass = bcrypt.hashpw(request.form['Password'].encode('utf-8'), bcrypt.gensalt())
+
         # Gathering user data entered to the application
         username = form.username.data
-        email = form.email.data
+        email = form.email.data.strip() if form.email.data else None
         password = form.password.data
 
         # Create a new user object
@@ -239,18 +238,19 @@ def register():
         cursor.execute("SELECT * FROM user WHERE username = ?", (username,))
         existingUsername = cursor.fetchone()
 
-        cursor.execute("SELECT * FROM user WHERE email = ?", (email,))
-        existingEmail = cursor.fetchone()
-
         if existingUsername is not None:
             flash('Account already exisits with given username', 'error')
             conn.close()
             return redirect(url_for('register'))
         
-        if existingEmail is not None:
-            flash('Account already exisits with given email', 'error')
-            conn.close()
-            return redirect(url_for('register'))
+        if email is not None:
+            cursor.execute("SELECT * FROM user WHERE email = ?", (email,))
+            existingEmail = cursor.fetchone()
+
+            if existingEmail is not None:
+                flash('Account already exisits with given email', 'error')
+                conn.close()
+                return redirect(url_for('register'))
 
         cursor.execute("INSERT INTO user (username, password, email, isadmin) VALUES (?, ?, ?, ?)",
                        (username, password, email, False))
