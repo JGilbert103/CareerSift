@@ -171,7 +171,7 @@ def getData(listid):
 
 
 # Method to handle populating listings saved by a user
-def getSaved(userid, savedSearchQuery=None):
+def getSaved(userid, savedSearchQuery='', jobType=[], position=[]):
     conn = sqlite3.connect('CareerSiftDB.db')
     cursor = conn.cursor()
     
@@ -188,30 +188,45 @@ def getSaved(userid, savedSearchQuery=None):
 
     # Only proceed if there are saved listids
     if savedIds:
+        query = """
+            SELECT listid, title, company, position, salary, type, sourcelink, description
+            FROM listing
+            WHERE listid IN ({})
+        """.format(','.join('?' for _ in savedIds))
+        
+        params = savedIds
+
         if savedSearchQuery:
-            # Prepare the query to search with LIKE
-            query = """
-                SELECT listid, title, company, position, salary, type, sourcelink, description
-                FROM listing
-                WHERE listid IN ({})
+            searchPattern = f"%{savedSearchQuery}%"
+            query += """
                 AND (
                     title LIKE ? OR 
                     company LIKE ? OR 
+                    position LIKE ? OR 
+                    type LIKE ? OR 
                     description LIKE ?
                 )
-            """.format(','.join('?' for _ in savedIds))
+            """
+            params.extend([searchPattern] * 5)
             
-            # Adding wildcard search pattern for LIKE
-            searchPattern = f"%{savedSearchQuery}%"
-            params = savedIds + [searchPattern] * 3  # Combine savedIds and search patterns
-        else:
+        if jobType:
+            like_clauses = [f"description LIKE ?" for _ in jobType]  # Create LIKE clause for each jobType
+            query += " AND (" + " OR ".join(like_clauses) + ")"  # Combine with OR
+            params.extend([f"%{jt}%" for jt in jobType])
+
+        if position:
+            like_clauses = [f"salary LIKE ?" for _ in position]  # Create LIKE clause for each position
+            query += " AND (" + " OR ".join(like_clauses) + ")"  # Combine with OR
+            params.extend([f"%{pos}%" for pos in position])
+
+        '''else:
             # Query without a search term
             query = """
                 SELECT listid, title, company, position, salary, type, sourcelink, description
                 FROM listing
                 WHERE listid IN ({})
             """.format(','.join('?' for _ in savedIds))
-            params = savedIds
+            params = savedIds'''
         
         # Execute the query with parameters
         cursor.execute(query, params)
@@ -533,8 +548,11 @@ def saved():
     if session.get('user'):
         userid = session['userid']
 
-        savedSearchQuery = request.args.get('search', '')
-        savedJobs = getSaved(userid, savedSearchQuery)
+        savedSearchQuery = request.args.get('search', '').strip()
+        jobType = request.args.getlist('jobType')
+        position = request.args.getlist('position')
+
+        savedJobs = getSaved(userid, savedSearchQuery, jobType, position)
 
         return render_template("saved.html", user=session['user'], jobs=savedJobs)
 
@@ -696,7 +714,7 @@ def updatePersonalInfo(userid, username=None, profilePic=None):
             cursor.execute("UPDATE user SET profilepic = ? WHERE userid = ?", (profilePic, userid))
         
         conn.commit()
-    except Exception as e:
+
     
     finally:
         conn.close()
