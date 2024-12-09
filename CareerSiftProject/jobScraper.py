@@ -1,3 +1,10 @@
+'''
+ABOUT
+Author: James Gilbert
+For: ITSC 3155, Software Engineering, Fall 2024
+Project: Final Project - Group 9, "CareerSift"
+'''
+
 # -*- coding: utf-8 -*-
 """
 Created on Wed Sep 18 20:00:26 2024

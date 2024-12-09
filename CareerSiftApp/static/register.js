@@ -1,3 +1,10 @@
+/*
+ABOUT
+Author: Adam Kerns
+For: ITSC 3155, Software Engineering, Fall 2024
+Project: Final Project - Group 9, "CareerSift"
+*/
+
 document.addEventListener("DOMContentLoaded", () => {
     const emailCheckbox = document.getElementById("email-checkbox");
     const emailField = document.getElementById("register-email");

@@ -1,3 +1,10 @@
+/*
+ABOUT
+Author: Owen Hartzell 801188721 ohartzel@charlotte.edu
+For: ITSC 3155, Software Engineering, Fall 2024
+Project: Final Project - Group 9, "CareerSift"
+*/
+
 -- Tables for user
 CREATE TABLE IF NOT EXISTS user (
     userid INTEGER PRIMARY KEY AUTOINCREMENT,

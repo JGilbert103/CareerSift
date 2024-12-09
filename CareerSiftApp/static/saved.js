@@ -1,3 +1,10 @@
+/*
+ABOUT
+Author: Adam Kerns
+For: ITSC 3155, Software Engineering, Fall 2024
+Project: Final Project - Group 9, "CareerSift"
+*/
+
 document.addEventListener("DOMContentLoaded", () => {
     const checkboxes = document.querySelectorAll(".card #choice");
     const compareBtn = document.querySelector(".compareBtn");

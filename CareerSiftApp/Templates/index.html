@@ -1,17 +1,14 @@
+<!--
+ABOUT
+Author: Adam Kerns
+Co-Author: Owen Hartzell 801188721 ohartzel@charlotte.edu
+For: ITSC 3155, Software Engineering, Fall 2024
+Project: Final Project - Group 9, "CareerSift"
+-->
+
 {% include "navbar.html" %}
         <script>
             document.addEventListener("DOMContentLoaded", () => {
-
-                /*const slider = document.getElementById("sal");
-                const amtDisplay = document.getElementById("amt");
-                amtDisplay.textContent = "$0";
-                slider.addEventListener("input", () => {
-                    if (slider.value == 0) {
-                        amtDisplay.textContent = "$0";  
-                    } else {
-                        amtDisplay.textContent = `$0 - $${slider.value}`;
-                    }
-                }); */
 
                 const stars = document.querySelectorAll(".star");
                 stars.forEach((star) => {
@@ -65,10 +62,6 @@
                     <input type="checkbox" id="PT" name="position" value="part"><label for="PT">Part-Time</label><br>
                     <input type="checkbox" id="contract" name="position" value="contract"><label for="contract">Contract</label><br>
                     <hr>
-                    <!-- <h5>Salary:</h5>
-                    <p class="amt" id="amt"></p>
-                    <input type="range" id="sal" name="sal" min="0" max="175000" value="0" step="1000"><br>
-                    <hr> -->
                     <button type="submit">Apply Filters</button>
                 </form>
             </div>
