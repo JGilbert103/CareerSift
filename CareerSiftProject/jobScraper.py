@@ -1,6 +1,6 @@
 '''
 ABOUT
-Author: James Gilbert
+Author: James Gilbert - 801317781 - jgilbert10345@gmail.com
 For: ITSC 3155, Software Engineering, Fall 2024
 Project: Final Project - Group 9, "CareerSift"
 '''
