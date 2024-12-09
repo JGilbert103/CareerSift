@@ -411,4 +411,3 @@ while True:
     
     # findInactiveListings()
     time.sleep(300) # Let the user actually see something!
-

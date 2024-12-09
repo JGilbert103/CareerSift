@@ -1156,5 +1156,3 @@ if __name__ == '__main__':
 
     # Start the Flask application
     app.run(debug=True)
-
-    
