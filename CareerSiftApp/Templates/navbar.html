@@ -19,14 +19,14 @@
                 <ul>
                     <li><a href="{{ url_for('index') }}">Home</a></li>
                     {% if user %}
-                    <li><a href="{{ url_for('saved') }}">Saved</a></li> <!-- only if logged in -->
+                    <li><a href="{{ url_for('saved') }}">Saved</a></li>
                     {% endif %}
                     <li><a href="{{ url_for('about') }}">About</a></li>
                     <li><a href="{{ url_for('contact') }}">Contact</a></li>
                     {% if user %}
                     <li><a href="{{ url_for('logout') }}" class="but LI">Logout</a></li>
                     {% else %}
-                    <li><a href="{{ url_for('login') }}" class="but LI">Log in</a></li> <!-- only if logged out -->
+                    <li><a href="{{ url_for('login') }}" class="but LI">Log in</a></li>
                     {% endif %}
                     {% if user %}
                     <li><a href="{{ url_for('settings') }}"><img class="contact-chip" src="{{ session['profilepic'] }}" width="50px" height="50px"></a></li>
@@ -37,5 +37,3 @@
             </nav>  
         </div>
         <hr>
-
-<!--Finished-->

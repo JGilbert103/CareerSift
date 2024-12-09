@@ -1,11 +1,3 @@
--- Database tables for CareerSift website
-
---CREATE TABLE careersift (
---    webaddress INTEGER,
---    userList VARCHAR(25),
---    PRIMARY KEY(webaddress)
---);
-
 -- Tables for user
 CREATE TABLE IF NOT EXISTS user (
     userid INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -54,6 +46,7 @@ CREATE TABLE messages (
     FOREIGN KEY (listid) REFERENCES listing(listid)
 );
 
+-- Tables for contact messages
 CREATE TABLE contactMessage (
     contactMessageId INTEGER PRIMARY KEY AUTOINCREMENT,
     email VARCHAR(75),

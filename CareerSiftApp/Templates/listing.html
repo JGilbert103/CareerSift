@@ -1,6 +1,5 @@
 {% include "navbar.html" %}
         <div class="listing">
-            <!--Listing info-->
             <div class="listing-nav">
                 <a href="{{ url_for('index') }}"><img class="arrow" src="/static/LeftArrow.png" alt="Go Back" width="20px" height="20px"></a>
                 <img class="job-source" src="/static/IndeedIcon.svg" alt="From Snagajob" width="20px" height="20px">
@@ -14,8 +13,7 @@
                 <p>{{ listing[3] }}</p>
                 <p>{{ listing[4] }}</p>
             </div>
-            <a href="{{ listing[6] }}"><button>Apply</button></a> <!-- goes to google-->
+            <a href="{{ listing[6] }}"><button>Apply</button></a>
         </div>
     </body>
 </html>
-<!--Finished-->

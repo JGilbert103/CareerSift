@@ -4,9 +4,8 @@ from wtforms.validators import Length, Regexp, DataRequired, EqualTo, Email, Opt
 from wtforms import ValidationError, BooleanField
 from models import user
 from database import db
-import bcrypt
 
-# Method for register form functionality
+# Class for register form
 class RegisterForm(FlaskForm):
     class Meta:
         csrf = False
@@ -28,7 +27,7 @@ class RegisterForm(FlaskForm):
         if db.session.query(user).filter_by(username=field.data).count() > 0:
             raise ValidationError('Username is already registered to another user')
 
-# Method for login form functionality
+# Class for login form
 class LoginForm(FlaskForm):
     class Meta:
         csrf = False
@@ -49,17 +48,16 @@ class LoginForm(FlaskForm):
         if existingUser and not bcrypt.checkpw(field.data.encode('utf-8'), user.password.encode('utf-8')):
             raise ValidationError('Incorrect password')
 
-# Method for contact us form functionality
+# Class for contact form
 class ContactForm(FlaskForm):
     class Meta:
         csrf = False
-    # Input for email
+
     email = StringField('Email', validators=[Email(message='Email is not valid'), DataRequired()])
-    # Input for issue
     issue = TextAreaField('Issue', validators=[DataRequired()])
-    # Submit form
     submit = SubmitField('Submit')
 
+# Class for personal info form
 class PersonalInfoForm(FlaskForm):
     class Meta:
         csrf = False
@@ -69,6 +67,7 @@ class PersonalInfoForm(FlaskForm):
 
     submit = SubmitField('Save Changes')
 
+# Class for change password form
 class ChangePasswordForm(FlaskForm):
     class Meta:
         csrf = False
@@ -79,14 +78,9 @@ class ChangePasswordForm(FlaskForm):
 
     submit = SubmitField('Change Password')
 
+# Class for delete account form
 class DeleteAccountForm(FlaskForm):
     class Meta:
         csrf = False
 
     submit = SubmitField('Delete Account')
-
-'''class FiltersForm(FlaskForm):
-    class Meta:
-        csrf = False
-
-    submit = SubmitField('Apply Filters')'''

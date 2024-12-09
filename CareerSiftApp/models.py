@@ -3,6 +3,7 @@ from sqlalchemy import Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 from database import db
 
+# Model for user
 class user(db.Model):
     userid = db.Column('userid', db.Integer, primary_key=True, autoincrement=True)
     username = db.Column('username', db.String(25))
@@ -16,6 +17,7 @@ class user(db.Model):
         self.email = email
         self.isadmin = isadmin
 
+# Model for listing
 class listing(db.Model):
     listid = db.Column('listid', db.Integer, primary_key=True, autoincrement=True)
     title = db.Column('title', db.String(50))
@@ -35,6 +37,7 @@ class listing(db.Model):
         self.sourceLink = sourceLink
         self.description = description
 
+# Model for saved listing
 class savedListing(db.Model):
     __tablename__ = 'savedListing'
 
@@ -44,6 +47,7 @@ class savedListing(db.Model):
     user = relationship('user', backref='savedListings')
     listing = relationship('listing', backref='savedbyusers')
 
+# Model for messages
 class messages(db.Model):
     messageid = db.Column('messageid', db.Integer, primary_key=True)
     senderid = db.Column('senderid', db.Integer)
@@ -64,6 +68,7 @@ class messages(db.Model):
         self.timestamp = timestamp
         self.isread = isread
 
+# Model for contact message
 class contactMessage(db.Model):
     contactMessageId = db.Column('contactMessageId', db.Integer, primary_key=True, autoincrement=True)
     email = db.Column('email', db.String(75))

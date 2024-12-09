@@ -14,10 +14,6 @@
                     <input type="checkbox" id="PT" name="position" value="part"><label for="PT">Part-Time</label><br>
                     <input type="checkbox" id="contract" name="position" value="contract"><label for="contract">Contract</label><br>
                     <hr>
-                    <!-- <h5>Salary:</h5>
-                    <p class="amt" id="amt"></p>
-                    <input type="range" id="sal" name="sal" min="0" max="175000" value="0" step="1000"><br>
-                    <hr> -->
                     <button type="submit">Apply Filters</button>
                 </form>
             </div>
@@ -41,36 +37,23 @@
 
                             if (selectedIds.length === 2) {
                                 compareBtn.classList.remove("no");
-                                // Update the href dynamically using template literals
+
                                 compareBtn.setAttribute("href", `{{ url_for('compare') }}?compare=${selectedIds.join('&compare=')}`);
                                 compareBtn.style.cursor = "pointer";
-                                compareBtn.style.pointerEvents = "auto"; // Enable the button
+                                compareBtn.style.pointerEvents = "auto";
                             } else {
                                 compareBtn.classList.add("no");
                                 compareBtn.style.cursor = "not-allowed";
                                 compareBtn.setAttribute("href", "#");
-                                compareBtn.style.pointerEvents = "none"; // Disable the button
+                                compareBtn.style.pointerEvents = "none";
                             }
                         };
                     
-                        // Initialize button state
                         updateButtonState();
                     
-                        // Add event listeners to checkboxes
                         checkboxes.forEach(checkbox => {
                             checkbox.addEventListener("change", updateButtonState);
                         });
-
-                        /*const slider = document.getElementById("sal");
-                        const amtDisplay = document.getElementById("amt");
-                        amtDisplay.textContent = "$0";
-                        slider.addEventListener("input", () => {
-                            if (slider.value == 0) {
-                                amtDisplay.textContent = "$0";  
-                            } else {
-                                amtDisplay.textContent = `$0 - $${slider.value}`;
-                            }
-                        }); */
 
                         const stars = document.querySelectorAll(".star");
                         stars.forEach((star) => {
@@ -133,4 +116,3 @@
         </div>
     </body>
 </html>
-<!--Finish formatting-->
