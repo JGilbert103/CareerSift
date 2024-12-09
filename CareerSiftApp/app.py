@@ -996,36 +996,6 @@ def getData(listid):
     conn.close()
 
     # Return listing data
-    return listingDatadef getData(listid):
-    '''
-    Retrieves attributes for a listing from the database
-
-    Attributes:
-        listid (int): The listid attribute for a specific listing entity
-
-    Returns:
-        listingData (tuple): A tuple containing attributes for a specific listing entity:
-        listid, title, company, position, salary, type, sourcelink, description. Returns
-        None if no listing with the given listid is found
-    '''
-
-    # Connecting to the database
-    conn = sqlite3.connect('CareerSiftDB.db')
-    cursor = conn.cursor()
-    # Querying the database for listings
-    cursor.execute("""
-        SELECT listid, title, company, position, salary, type, sourcelink, description
-        FROM listing
-        WHERE listid = ?
-    """, (listid,)) 
-    
-    # Fetching the listing
-    listingData = cursor.fetchone()
-    
-    # Closing the connection to the database
-    conn.close()
-
-    # Return listing data
     return listingData
 
 
