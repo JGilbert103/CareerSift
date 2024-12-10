@@ -393,7 +393,9 @@ def getIndeedListingsTask():
 def getSnagajobListingsTask():
     # print("Getting Snagajob Listings")
     getSnagajobListings()
-         
+
+## UNCOMMENT THE BLOCK BELOW TO RUN THE WEB SCRAPER ##
+'''         
 while True:
     print("Opening Indeed")
     resetFile()
@@ -411,3 +413,4 @@ while True:
     
     # findInactiveListings()
     time.sleep(300) # Let the user actually see something!
+'''
